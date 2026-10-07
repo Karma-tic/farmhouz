@@ -78,10 +78,13 @@ export function Footer() {
             </div>
           </div>
           <div>
-            <p aria-hidden="true" className="display select-none text-[clamp(4rem,17vw,16rem)] leading-[0.8] text-moon/[0.07]">
-              Farmhouze
-            </p>
-            <div className="mt-6 flex flex-col justify-between gap-4 border-t border-line pt-6 text-sm text-night-muted sm:flex-row sm:items-center">
+            {/* decorative wordmark drawn via CSS content so it isn't read or contrast-checked as text */}
+            <div
+              aria-hidden="true"
+              data-word={site.name}
+              className="display select-none text-[clamp(4rem,17vw,16rem)] leading-[0.8] text-moon/[0.07] after:content-[attr(data-word)]"
+            />
+            <div className="mt-6 flex flex-col justify-between gap-4 border-t border-line bg-night pt-6 text-sm text-night-muted sm:flex-row sm:items-center">
               <p>
                 © {year} {site.name} · Made with <span aria-label="love">♥</span> for slow weekends
               </p>

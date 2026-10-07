@@ -32,7 +32,7 @@ function PackageCard({ pkg, index }: { pkg: Package; index: number }) {
   };
 
   return (
-    <Reveal as="li" delay={(index % 3) * 0.06} className="w-[82vw] shrink-0 snap-center sm:w-[60vw] md:w-auto [perspective:1200px]">
+    <Reveal as="li" amount={0.02} delay={(index % 3) * 0.06} className="w-[82vw] shrink-0 snap-center sm:w-[60vw] md:w-auto [perspective:1200px]">
       <button
         ref={ref}
         type="button"

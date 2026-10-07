@@ -44,10 +44,12 @@ export function Header() {
                 <Link
                   href={l.href}
                   onClick={(e) => handleHashLink(e, l.href)}
-                  className="flip-link text-[0.95rem] font-medium text-ink"
+                  className="group/nav inline-flex min-h-11 items-center text-[0.95rem] font-medium text-ink"
                 >
-                  <span>{l.label}</span>
-                  <span aria-hidden="true">{l.label}</span>
+                  <span className="flip-link">
+                    <span>{l.label}</span>
+                    <span aria-hidden="true">{l.label}</span>
+                  </span>
                 </Link>
               </li>
             ))}

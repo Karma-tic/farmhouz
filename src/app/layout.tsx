@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { ViewTransition } from "react";
 import { Cursor } from "@/components/chrome/Cursor";
 import { Header } from "@/components/chrome/Header";
 import { Loader, loaderScript } from "@/components/chrome/Loader";
@@ -9,7 +10,7 @@ import { EnquiryProvider } from "@/components/enquiry/EnquiryContext";
 import { EnquirySheet } from "@/components/enquiry/EnquirySheet";
 import { DaylightProvider } from "@/components/providers/DaylightProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
-import { Toaster } from "@/components/ui/toaster";
+import { LazyToaster as Toaster } from "@/components/ui/lazy-toaster";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -18,13 +19,23 @@ import "./globals.css";
  * Fontsource) through next/font/local: same files, no third-party request,
  * and builds work without network access to Google.
  */
+// Fraunces is pre-instanced at SOFT 50 / WONK 0 (weights 300–600, opsz variable) and
+// subset to Latin to keep it small; see README › Fonts.
 const fraunces = localFont({
-  src: [
-    { path: "../fonts/fraunces-latin-full-normal.woff2", style: "normal", weight: "100 900" },
-    { path: "../fonts/fraunces-latin-full-italic.woff2", style: "italic", weight: "100 900" },
-  ],
+  src: "../fonts/fraunces-normal.woff2",
+  weight: "300 600",
+  style: "normal",
   variable: "--font-fraunces",
   display: "swap",
+  fallback: ["Georgia", "serif"],
+});
+const frauncesItalic = localFont({
+  src: "../fonts/fraunces-italic.woff2",
+  weight: "300 600",
+  style: "italic",
+  variable: "--font-fraunces-italic",
+  display: "swap",
+  preload: false,
   fallback: ["Georgia", "serif"],
 });
 const karla = localFont({
@@ -71,7 +82,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html
       lang="en-IN"
-      className={`${fraunces.variable} ${karla.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${frauncesItalic.variable} ${karla.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -89,7 +100,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <EnquiryProvider>
           <Loader />
           <Header />
-          {children}
+          <ViewTransition>{children}</ViewTransition>
           <EnquirySheet />
           <MobileBookingBar />
         </EnquiryProvider>

@@ -9,7 +9,12 @@ import { setScrollLocked } from "@/components/providers/SmoothScroll";
 import { Button } from "@/components/ui/button";
 import { site, type Package } from "@/content/site";
 import { useEnquiry } from "./EnquiryContext";
-import { EnquiryForm } from "./EnquiryForm";
+import dynamic from "next/dynamic";
+
+const EnquiryForm = dynamic(() => import("./EnquiryForm").then((m) => m.EnquiryForm), {
+  ssr: false,
+  loading: () => <div className="min-h-[520px]" aria-busy="true" />,
+});
 
 /**
  * Side sheet (bottom sheet on mobile) holding the enquiry form. When opened from a

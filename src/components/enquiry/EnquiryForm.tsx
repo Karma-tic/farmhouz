@@ -112,6 +112,7 @@ export function EnquiryForm({
     handleSubmit,
     control,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<EnquiryInput, unknown, Enquiry>({
     resolver: zodResolver(enquirySchema),
@@ -187,7 +188,14 @@ export function EnquiryForm({
                   <MessageCircle /> Also send on WhatsApp
                 </a>
               </Button>
-              <Button variant="ghost" onClick={() => setSent(null)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  reset();
+                  setRange(undefined);
+                  setSent(null);
+                }}
+              >
                 New enquiry
               </Button>
             </div>
@@ -263,8 +271,8 @@ export function EnquiryForm({
                     <button
                       id={id("dates")}
                       type="button"
-                      className={cn(fieldBase, "flex items-center gap-3 text-left text-[0.95rem]")}
-                      aria-invalid={!!errors.from}
+                      className={cn(fieldBase, "flex items-center gap-3 text-left text-[0.95rem]", errors.from && "border-terra")}
+                      aria-describedby={errors.from ? `${id("dates")}-error` : undefined}
                     >
                       <CalendarDays className="size-4 text-sage" strokeWidth={1.5} aria-hidden="true" />
                       {values.from ? (

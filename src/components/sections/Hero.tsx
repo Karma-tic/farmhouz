@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { handleHashLink } from "@/components/chrome/scrollLink";
 import { Button } from "@/components/ui/button";
 import { defaultWhatsappText, site, whatsappLink } from "@/content/site";
-import { gsap, mq, SplitText, useGSAP } from "@/lib/motion/gsap";
+import { mq } from "@/lib/motion/gsap";
+import { usePinTimeline } from "@/lib/motion/usePinTimeline";
 import { useMagnetic } from "@/lib/motion/useMagnetic";
 
 const { frames, path } = site.hero.sequence;
@@ -26,6 +27,7 @@ export function Hero() {
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   useMagnetic(ctaRef, 6);
 
   // Art-directed LCP image: first drone frame on desktop, vertical poster on mobile
@@ -114,53 +116,34 @@ export function Hero() {
   }, []);
 
   /* ------------------------------------------------- scroll choreography */
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia();
-      const intro = () => {
-        const split = SplitText.create(".hero-line", { type: "lines", mask: "lines", linesClass: "hero-split" });
-        const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-        tl.from(split.lines, { yPercent: 110, duration: 0.9, stagger: 0.06 })
-          .from(".hero-fade", { autoAlpha: 0, y: 16, duration: 0.7, stagger: 0.06 }, "-=0.55");
-        return () => split.revert();
-      };
-      const whenReady = (fn: () => void) => {
-        if (document.documentElement.hasAttribute("data-noloader")) fn();
-        else window.addEventListener("fz:intro-done", fn, { once: true });
-      };
-
-      mm.add(mq.desktop, () => {
-        let revertIntro: (() => void) | undefined;
-        whenReady(() => (revertIntro = intro()));
-        const state = { f: 0 };
-        const tl = gsap.timeline({
-          scrollTrigger: { trigger: root.current, start: "top top", end: "+=200%", pin: true, scrub: 0.5, anticipatePin: 1 },
-        });
-        tl.to(state, {
-          f: frames - 1,
-          ease: "none",
-          duration: 1,
-          onUpdate: () => canvasRef.current?.dispatchEvent(new CustomEvent("frame", { detail: Math.round(state.f) })),
-        }).to(textRef.current, { autoAlpha: 0, yPercent: -18, ease: "power2.in", duration: 0.3 }, 0.7);
-        return () => revertIntro?.();
-      });
-
-      mm.add(mq.mobile, () => {
-        let revertIntro: (() => void) | undefined;
-        whenReady(() => (revertIntro = intro()));
-        return () => revertIntro?.();
-      });
+  // Desktop: pin for 200vh, scrub the frames, lift the headline out at 70–100%.
+  usePinTimeline(
+    root,
+    ({ tl }) => {
+      const state = { f: 0 };
+      tl.to(state, {
+        f: frames - 1,
+        duration: 1,
+        onUpdate: () => canvasRef.current?.dispatchEvent(new CustomEvent("frame", { detail: Math.round(state.f) })),
+      }).to(textRef.current, { autoAlpha: 0, yPercent: -18, ease: "power2.in", duration: 0.3 }, 0.7);
     },
-    { scope: root },
+    { length: "+=200%", scrub: 0.5 },
   );
 
   /* ---------------------------------------------- mobile video (lazy) */
   useEffect(() => {
     const v = videoRef.current;
     if (!v || !matchMedia(mq.mobile).matches) return;
-    v.src = site.hero.mobileVideo;
-    v.load();
-    v.play().catch(() => {});
+    // start after the page has settled so the poster stays the LCP and the main thread is free
+    const start = () => {
+      v.src = site.hero.mobileVideo;
+      v.load();
+      v.play().catch(() => {});
+    };
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+    const kick = () => idle(start);
+    if (document.readyState === "complete") kick();
+    else window.addEventListener("load", kick, { once: true });
   }, []);
 
   return (
@@ -182,39 +165,41 @@ export function Hero() {
 
       <video
         ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover md:hidden motion-reduce:hidden"
+        className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 md:hidden motion-reduce:hidden"
+        style={{ opacity: videoPlaying ? 1 : 0 }}
+        onPlaying={() => setVideoPlaying(true)}
         muted
         loop
         playsInline
-        autoPlay
         preload="none"
         aria-hidden="true"
-        poster="/media/hero-mobile-poster.webp"
       />
 
       {/* scrim keeps text ≥ 4.5:1 over any frame */}
-      <div aria-hidden="true" className="scrim-bottom absolute inset-x-0 bottom-0 h-[72%]" />
+      <div aria-hidden="true" className="scrim-bottom absolute inset-x-0 bottom-0 h-[86%]" />
 
       <div ref={textRef} className="theme-night absolute inset-x-0 bottom-0 pb-[max(2.5rem,7vh)] md:pb-[max(5.5rem,11vh)]">
         <div className="container-x">
-          <p className="hero-fade eyebrow mb-5 flex items-center gap-2 text-moon/90">
+          <p style={{ "--i": 3 } as React.CSSProperties} className="hero-fade eyebrow mb-5 flex items-center gap-2 text-moon/90">
             <MapPin className="size-4" strokeWidth={1.5} aria-hidden="true" />
             {site.location.kmFromCity} km from {site.location.city} · sleeps {site.capacity.sleeps} · events up to {site.capacity.eventGuests}
           </p>
           <h1 id="hero-title" className="display display-xl max-w-[14ch] text-moon">
             {site.hero.headline.map((l, i) => (
-              <span key={i} className={i === 1 ? "hero-line italic-soft block" : "hero-line block"}>
-                {l}
+              <span key={i} className="block overflow-hidden pb-[0.08em]">
+                <span className={i === 1 ? "hero-line italic-soft block" : "hero-line block"} style={{ "--i": i } as React.CSSProperties}>
+                  {l}
+                </span>
               </span>
             ))}
           </h1>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="hero-fade">
+            <Button asChild size="lg" className="hero-fade" style={{ "--i": 4 } as React.CSSProperties}>
               <Link ref={ctaRef} href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
                 Check availability
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="hero-fade text-moon">
+            <Button asChild size="lg" variant="outline" className="hero-fade text-moon" style={{ "--i": 5 } as React.CSSProperties}>
               <a href={whatsappLink(defaultWhatsappText)} target="_blank" rel="noopener noreferrer">
                 <MessageCircle /> WhatsApp us
               </a>

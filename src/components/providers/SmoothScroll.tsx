@@ -1,8 +1,8 @@
 "use client";
 
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { useEffect } from "react";
-import { gsap, ScrollTrigger } from "@/lib/motion/gsap";
+import { loadGsap } from "@/lib/motion/gsap";
 
 let instance: Lenis | null = null;
 
@@ -12,9 +12,13 @@ export function scrollToTarget(target: string | HTMLElement | number) {
     instance.scrollTo(target, { offset: typeof target === "number" ? 0 : -72, duration: 1.4 });
     return;
   }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (typeof target === "number") {
+    window.scrollTo({ top: target, behavior: reduce ? "auto" : "smooth" });
+    return;
+  }
   const el = typeof target === "string" ? document.querySelector<HTMLElement>(target) : target;
-  if (typeof el === "number") window.scrollTo({ top: el, behavior: "smooth" });
-  else el?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  el?.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
 }
 
 /** Pause / resume smooth scroll (e.g. while a dialog is open). */
@@ -26,32 +30,42 @@ export function setScrollLocked(locked: boolean) {
 
 /**
  * Lenis smooth scrolling, driven by GSAP's ticker so ScrollTrigger and Lenis
- * stay in lockstep. Off for reduced motion and touch devices — native momentum
- * scrolling is better there. Created imperatively so toggling never remounts the page.
+ * stay in lockstep. Desktop fine pointers only (touch keeps native momentum
+ * scrolling) and never with reduced motion. Loaded on demand and created
+ * imperatively so toggling never remounts the page.
  */
 export function SmoothScroll() {
   useEffect(() => {
-    const m = window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse)");
-    let tick: ((t: number) => void) | null = null;
+    const m = window.matchMedia("(pointer: fine) and (min-width: 768px) and (prefers-reduced-motion: no-preference)");
+    let stopFn: (() => void) | null = null;
+    let cancelled = false;
 
-    const start = () => {
+    const start = async () => {
       if (instance) return;
-      instance = new Lenis({ autoRaf: false, lerp: 0.1, anchors: { offset: -72 } });
-      instance.on("scroll", ScrollTrigger.update);
-      tick = (time: number) => instance?.raf(time * 1000);
+      const [{ default: LenisCtor }, { gsap, ScrollTrigger }] = await Promise.all([import("lenis"), loadGsap()]);
+      if (cancelled || instance) return;
+      const lenis = new LenisCtor({ autoRaf: false, lerp: 0.1, anchors: { offset: -72 } });
+      instance = lenis;
+      lenis.on("scroll", ScrollTrigger.update);
+      const tick = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
+      stopFn = () => {
+        gsap.ticker.remove(tick);
+        lenis.destroy();
+        instance = null;
+      };
     };
     const stop = () => {
-      if (tick) gsap.ticker.remove(tick);
-      instance?.destroy();
-      instance = null;
+      stopFn?.();
+      stopFn = null;
     };
-    const sync = () => (m.matches ? stop() : start());
+    const sync = () => (m.matches ? void start() : stop());
 
     sync();
     m.addEventListener("change", sync);
     return () => {
+      cancelled = true;
       m.removeEventListener("change", sync);
       stop();
     };

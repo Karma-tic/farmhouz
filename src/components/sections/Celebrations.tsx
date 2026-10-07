@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { Button } from "@/components/ui/button";
+import { PageTeaser } from "@/components/subpage/PageTeaser";
 import { Reveal } from "@/components/ui/reveal";
 import { site } from "@/content/site";
 import { cn } from "@/lib/utils";
@@ -48,7 +49,8 @@ export function Celebrations() {
   return (
     <section id="celebrations" data-daylight="0.64" aria-labelledby="celebrations-title" className="relative pb-[clamp(5rem,12vw,9rem)]">
       <div className="container-x">
-        <Reveal as="header" className="mb-12 max-w-4xl">
+        <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <Reveal as="header" className="max-w-4xl">
           <p className="eyebrow mb-4 text-sage">Celebrations · 06:15 PM</p>
           <h2 id="celebrations-title" className="display display-lg">
             Make it yours. <br />
@@ -58,6 +60,8 @@ export function Celebrations() {
             Up to {site.capacity.eventGuests} guests, your own decorators and caterers, and rooms for family to stay the night.
           </p>
         </Reveal>
+        <PageTeaser href="/celebrations" label="Event packages" image={site.celebrations.items[1].image} transitionName="celebrations-hero" />
+        </div>
 
         {/* Desktop: image accordion */}
         <div className="hidden h-[min(78svh,680px)] gap-3 md:flex">
@@ -84,7 +88,7 @@ export function Celebrations() {
                       onClick={() => setActive(i)}
                       onFocus={() => setActive(i)}
                       className={cn(
-                        "display text-left leading-none text-moon transition-all duration-500",
+                        "display min-h-11 min-w-11 text-left leading-none text-moon transition-all duration-500",
                         open ? "text-[clamp(2rem,3.4vw,3.25rem)]" : "text-[1.5rem] [writing-mode:vertical-rl] rotate-180",
                       )}
                     >

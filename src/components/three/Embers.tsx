@@ -3,6 +3,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { mulberry32 } from "@/lib/utils";
 
 const vertex = /* glsl */ `
   uniform float uTime;
@@ -51,8 +52,7 @@ function Field({ count }: { count: number }) {
     const seed = new Float32Array(count);
     const speed = new Float32Array(count);
     const size = new Float32Array(count);
-    let s = 12345;
-    const r = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
+    const r = mulberry32(12345);
     for (let i = 0; i < count; i++) {
       // embers concentrate near the centre (the fire); fireflies spread wide
       const spread = r() > 0.82 ? 1.6 : 0.55;

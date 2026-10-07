@@ -1,13 +1,26 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
-import { useGSAP } from "@gsap/react";
+/**
+ * GSAP is only needed for desktop choreography (pins, scrubs, magnetic buttons,
+ * cursor, smooth scroll), so it is loaded on demand instead of shipping in the
+ * initial bundle. Phones never download it.
+ */
+type GsapBundle = {
+  gsap: typeof import("gsap").gsap;
+  ScrollTrigger: typeof import("gsap/ScrollTrigger").ScrollTrigger;
+};
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
-  gsap.config({ nullTargetWarn: false });
+let loading: Promise<GsapBundle> | null = null;
+
+export function loadGsap(): Promise<GsapBundle> {
+  if (!loading) {
+    loading = Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([g, st]) => {
+      g.gsap.registerPlugin(st.ScrollTrigger);
+      g.gsap.config({ nullTargetWarn: false });
+      return { gsap: g.gsap, ScrollTrigger: st.ScrollTrigger };
+    });
+  }
+  return loading;
 }
 
 /** Motion tokens (mirrors the CSS custom properties in globals.css) */
@@ -29,5 +42,3 @@ export const mq = {
   mobile: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
   reduced: "(prefers-reduced-motion: reduce)",
 } as const;
-
-export { gsap, ScrollTrigger, SplitText, useGSAP };

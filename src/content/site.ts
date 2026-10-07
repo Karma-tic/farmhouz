@@ -394,7 +394,7 @@ export const site = {
   reviews: [] as Review[],
 
   nav: [
-    { label: "Stay", href: "/#spaces" },
+    { label: "Stay", href: "/stay" },
     { label: "Spaces", href: "/#spaces" },
     { label: "Celebrations", href: "/#celebrations" },
     { label: "Gallery", href: "/#gallery" },

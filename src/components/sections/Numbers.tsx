@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/ui/reveal";
 import { site } from "@/content/site";
+import { usePrefersReducedMotion } from "@/lib/motion/useReducedMotion";
 
 /** One odometer digit: a 0–9 strip that rolls into place with a motion blur. */
 function Digit({ d, go, delay }: { d: number; go: boolean; delay: number }) {
@@ -48,19 +49,17 @@ function BlurNumber({ value, suffix, go }: { value: number; suffix: string; go: 
 
 export function Numbers() {
   const ref = useRef<HTMLDivElement>(null);
-  const [go, setGo] = useState(false);
+  const [inView, setInView] = useState(false);
+  const reduce = usePrefersReducedMotion();
+  const go = inView || reduce;
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setGo(true);
-      return;
-    }
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
-          setGo(true);
+          setInView(true);
           io.disconnect();
         }
       },

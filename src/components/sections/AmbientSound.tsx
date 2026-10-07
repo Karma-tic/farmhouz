@@ -91,7 +91,7 @@ export function AmbientSound() {
       type="button"
       onClick={() => setOn((v) => !v)}
       aria-pressed={on}
-      className="eyebrow inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line px-4 text-moon transition-colors hover:border-moon/60"
+      className="eyebrow inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-line bg-night px-4 text-moon transition-colors hover:border-moon/60"
     >
       {on ? <Volume2 className="size-4" strokeWidth={1.5} aria-hidden="true" /> : <VolumeX className="size-4" strokeWidth={1.5} aria-hidden="true" />}
       Ambient sound {on ? "on" : "off"}

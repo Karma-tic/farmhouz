@@ -23,7 +23,7 @@ export function Location() {
       id="location"
       data-daylight="0.84"
       aria-labelledby="location-title"
-      className="theme-night relative bg-[color-mix(in_oklab,var(--night)_72%,transparent)] py-[clamp(5rem,12vw,9rem)]"
+      className="theme-night relative bg-[color-mix(in_oklab,var(--night)_88%,transparent)] py-[clamp(5rem,12vw,9rem)]"
     >
       <div className="container-x grid items-center gap-12 lg:grid-cols-[1fr_1.2fr]">
         <div>

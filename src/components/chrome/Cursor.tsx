@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/motion/gsap";
+import { loadGsap } from "@/lib/motion/gsap";
 
 /**
  * Desktop-only companion cursor: a 10px wheat dot that grows into a 56px ring
@@ -14,7 +14,9 @@ export function Cursor() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const m = matchMedia("(pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const m = matchMedia(
+      "(pointer: fine) and (prefers-reduced-motion: no-preference)",
+    );
     const sync = () => setEnabled(m.matches);
     sync();
     m.addEventListener("change", sync);
@@ -24,29 +26,40 @@ export function Cursor() {
   useEffect(() => {
     const el = ref.current;
     if (!enabled || !el) return;
-    const xTo = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3.out" });
-    const yTo = gsap.quickTo(el, "y", { duration: 0.35, ease: "power3.out" });
-    let shown = false;
-    const move = (e: PointerEvent) => {
-      if (!shown) {
-        gsap.set(el, { x: e.clientX, y: e.clientY });
-        gsap.to(el, { autoAlpha: 1, duration: 0.2 });
-        shown = true;
-      }
-      xTo(e.clientX);
-      yTo(e.clientY);
-      const t = (e.target as Element | null)?.closest<HTMLElement>("[data-cursor]");
-      setLabel(t?.dataset.cursor ?? null);
-    };
-    const leave = () => {
-      gsap.to(el, { autoAlpha: 0, duration: 0.2 });
-      shown = false;
-    };
-    window.addEventListener("pointermove", move, { passive: true });
-    document.documentElement.addEventListener("pointerleave", leave);
+    let off: (() => void) | undefined;
+    let cancelled = false;
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
+      const xTo = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3.out" });
+      const yTo = gsap.quickTo(el, "y", { duration: 0.35, ease: "power3.out" });
+      let shown = false;
+      const move = (e: PointerEvent) => {
+        if (!shown) {
+          gsap.set(el, { x: e.clientX, y: e.clientY });
+          gsap.to(el, { autoAlpha: 1, duration: 0.2 });
+          shown = true;
+        }
+        xTo(e.clientX);
+        yTo(e.clientY);
+        const t = (e.target as Element | null)?.closest<HTMLElement>(
+          "[data-cursor]",
+        );
+        setLabel(t?.dataset.cursor ?? null);
+      };
+      const leave = () => {
+        gsap.to(el, { autoAlpha: 0, duration: 0.2 });
+        shown = false;
+      };
+      window.addEventListener("pointermove", move, { passive: true });
+      document.documentElement.addEventListener("pointerleave", leave);
+      off = () => {
+        window.removeEventListener("pointermove", move);
+        document.documentElement.removeEventListener("pointerleave", leave);
+      };
+    });
     return () => {
-      window.removeEventListener("pointermove", move);
-      document.documentElement.removeEventListener("pointerleave", leave);
+      cancelled = true;
+      off?.();
     };
   }, [enabled]);
 

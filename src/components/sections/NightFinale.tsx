@@ -8,6 +8,7 @@ import { handleHashLink } from "@/components/chrome/scrollLink";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { defaultWhatsappText, whatsappLink } from "@/content/site";
+import { useIsDesktop, usePrefersReducedMotion } from "@/lib/motion/useReducedMotion";
 import { mulberry32 } from "@/lib/utils";
 
 // Three.js only loads when the night section is close (see IntersectionObserver below)
@@ -28,13 +29,13 @@ export function NightFinale() {
   const ref = useRef<HTMLElement>(null);
   const [near, setNear] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [count, setCount] = useState(0);
+  const reduce = usePrefersReducedMotion();
+  const desktop = useIsDesktop();
+  const count = reduce ? 0 : desktop ? 300 : 120;
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setCount(matchMedia("(min-width: 768px)").matches ? 300 : 120);
     const nearIO = new IntersectionObserver(([e]) => e.isIntersecting && setNear(true), { rootMargin: "600px 0px" });
     const visIO = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
     nearIO.observe(el);
