@@ -16,6 +16,7 @@
   --night: #14130f;
   --moon: #ede6d6;
   --ember: #e8823a;
+  --firefly: #f2e39a;
   --night-line: #3a352c;
   --night-muted: #b9b0a0;
 
@@ -408,4 +409,32 @@ html.lenis body {
     opacity: 1;
     transform: none;
   }
+}
+
+/* FAQ height animation (Radix exposes the measured height) */
+@keyframes faq-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+@keyframes faq-close {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+.faq-content[data-state="open"] {
+  animation: faq-open var(--dur-ui) var(--ease-out);
+}
+.faq-content[data-state="closed"] {
+  animation: faq-close var(--dur-ui) var(--ease-out);
 }

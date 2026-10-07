@@ -6,7 +6,8 @@ const STOPS: { at: number; top: string; bottom: string; veil: number; tint: [num
   { at: 0.18, top: "#DCE3E0", bottom: "#E7E8E0", veil: 0.35, tint: [255, 255, 255, 0.0], phase: "morning" },
   { at: 0.36, top: "#CFE3EA", bottom: "#F4EEE1", veil: 0.3, tint: [255, 255, 255, 0.0], phase: "noon" },
   { at: 0.6, top: "#F2B872", bottom: "#C9663A", veil: 0.55, tint: [242, 184, 114, 0.07], phase: "golden" },
-  { at: 0.8, top: "#5B4A6B", bottom: "#1F1B24", veil: 0, tint: [91, 74, 107, 0.0], phase: "dusk" },
+  { at: 0.72, top: "#E9A06A", bottom: "#B65A3A", veil: 0.58, tint: [242, 184, 114, 0.05], phase: "golden" },
+  { at: 0.81, top: "#5B4A6B", bottom: "#1F1B24", veil: 0, tint: [91, 74, 107, 0.0], phase: "dusk" },
   { at: 1.0, top: "#14130F", bottom: "#0B0B0A", veil: 0, tint: [20, 19, 15, 0], phase: "night" },
 ];
 
