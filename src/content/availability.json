@@ -1,0 +1,13 @@
+{
+  "_comment": "Booked dates (YYYY-MM-DD). Each range is inclusive of 'from' and 'to' nights. Edit this file or set NEXT_PUBLIC_ICS_URL to a public Google Calendar ICS link.",
+  "booked": [
+    { "from": "2026-10-17", "to": "2026-10-18" },
+    { "from": "2026-10-24", "to": "2026-10-25" },
+    { "from": "2026-10-31", "to": "2026-11-01" },
+    { "from": "2026-11-07", "to": "2026-11-08" },
+    { "from": "2026-11-14", "to": "2026-11-14" },
+    { "from": "2026-11-21", "to": "2026-11-23" },
+    { "from": "2026-12-24", "to": "2026-12-27" },
+    { "from": "2026-12-31", "to": "2027-01-01" }
+  ]
+}
