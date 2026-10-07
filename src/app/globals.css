@@ -26,6 +26,7 @@
   --sky-veil: 0.45;
   --tint: rgb(244 238 225 / 0);
   --shadow-x: -18px;
+  --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C5448' stroke-width='1.5' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>");
 
   /* shape + depth */
   --radius-card: 20px;
@@ -236,17 +237,17 @@ canvas {
 }
 
 /* ---------------------------------------------------------- utilities */
-.container-x {
+@utility container-x {
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.no-scrollbar {
+@utility no-scrollbar {
   scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 .sr-only-focusable:not(:focus-visible) {
   position: absolute;
@@ -396,4 +397,15 @@ html.lenis body {
 }
 .lenis.lenis-stopped {
   overflow: clip;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
