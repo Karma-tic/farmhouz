@@ -350,7 +350,7 @@ function heroFrame(t, W, H) {
 }
 
 async function hero() {
-  const dir = `${MEDIA}/hero-flight`;
+  const dir = `${MEDIA}/hero-flight-hd`;
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
   const N = 120;
@@ -360,7 +360,7 @@ async function hero() {
   }
   // poster = final frame on an opaque morning sky (used for reduced motion / OG fallbacks)
   const sky = `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE3EA"/><stop offset="1" stop-color="#F4EEE1"/></linearGradient></defs><rect width="1920" height="1080" fill="url(#s)"/></svg>`;
-  await sharp(Buffer.from(sky)).composite([{ input: `${dir}/0120.webp` }]).webp({ quality: 70 }).toFile(`${MEDIA}/hero-poster-farmhouse.webp`);
+  await sharp(Buffer.from(sky)).composite([{ input: `${dir}/0120.webp` }]).webp({ quality: 70 }).toFile(`${MEDIA}/hero-poster-farmhouse-hd.webp`);
   console.log("hero frames ✓");
 
   // vertical mobile loop (ping-pong over the second half of the flight)
@@ -376,8 +376,8 @@ async function hero() {
     await sharp(skyBuf).composite([{ input: fr }]).png().toFile(`${tmp}/${String(i + 1).padStart(4, "0")}.png`);
     await sharp(skyBuf).composite([{ input: fr }]).png().toFile(`${tmp}/${String(2 * M - i).padStart(4, "0")}.png`);
   }
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-framerate", "24", "-i", `${tmp}/%04d.png`, "-vf", "scale=720:-2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "30", "-preset", "slow", "-an", "-movflags", "+faststart", `${MEDIA}/hero-mobile-farmhouse.mp4`]);
-  await sharp(`${tmp}/0001.png`).resize(720).webp({ quality: 65 }).toFile(`${MEDIA}/hero-mobile-poster-farmhouse.webp`);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-framerate", "24", "-i", `${tmp}/%04d.png`, "-vf", "scale=720:-2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "30", "-preset", "slow", "-an", "-movflags", "+faststart", `${MEDIA}/hero-mobile-farmhouse-hd.mp4`]);
+  await sharp(`${tmp}/0001.png`).resize(720).webp({ quality: 65 }).toFile(`${MEDIA}/hero-mobile-poster-farmhouse-hd.webp`);
   await rm(tmp, { recursive: true, force: true });
   console.log("mobile video ✓");
 }
