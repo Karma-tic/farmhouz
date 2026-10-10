@@ -1,36 +1,34 @@
-import { Booking } from "@/components/sections/Booking";
+import { Areas } from "@/components/sections/Areas";
 import { Celebrations } from "@/components/sections/Celebrations";
 import { Faq } from "@/components/sections/Faq";
+import { FeaturedFarms } from "@/components/sections/FeaturedFarms";
 import { Footer } from "@/components/sections/Footer";
 import { Gallery } from "@/components/sections/Gallery";
 import { Hero } from "@/components/sections/Hero";
-import { Location } from "@/components/sections/Location";
+import { HowItWorks } from "@/components/sections/HowItWorks";
 import { NightFinale } from "@/components/sections/NightFinale";
 import { Numbers } from "@/components/sections/Numbers";
-import { Packages } from "@/components/sections/Packages";
 import { Reviews } from "@/components/sections/Reviews";
-import { Spaces } from "@/components/sections/Spaces";
-import { faqJsonLd, JsonLd, venueJsonLd } from "@/lib/seo";
+import { faqJsonLd, JsonLd, orgJsonLd } from "@/lib/seo";
 
-/** "A Day at Farmhouze": scrolling the page is living one day at the farm. */
+/** "A Day at Farmhouze" — scroll from dawn to bonfire while you find your farm. */
 export default function Home() {
   return (
     <>
       <main id="main">
         <Hero />
         <Numbers />
-        <Spaces />
-        <Packages />
+        <HowItWorks />
+        <FeaturedFarms />
         <Gallery />
         <Celebrations />
-        <Booking />
         <Reviews />
-        <Location />
+        <Areas />
         <Faq />
         <NightFinale />
       </main>
       <Footer />
-      <JsonLd data={venueJsonLd()} />
+      <JsonLd data={orgJsonLd()} />
       <JsonLd data={faqJsonLd()} />
     </>
   );

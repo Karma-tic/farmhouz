@@ -74,7 +74,7 @@ export function Numbers() {
       <div className="container-x">
         <Reveal className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <h2 id="numbers-title" className="display display-md max-w-[18ch]">
-            An escape that starts <span className="italic-soft text-terra">{site.location.driveTime}</span> from the city.
+            Your farm is <span className="italic-soft text-terra">30 minutes</span> from New Market.
           </h2>
           <p className="eyebrow text-muted">Escape in numbers · 07:30 AM</p>
         </Reveal>

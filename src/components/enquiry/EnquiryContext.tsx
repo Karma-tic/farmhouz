@@ -1,9 +1,10 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import type { PackageId } from "@/content/site";
+import type { PackageId } from "@/content/types";
 
 export type EnquiryPrefill = {
+  farmSlug?: string;
   packageId?: PackageId;
   occasion?: string;
   /** layoutId of the image that should morph into the sheet header */
@@ -19,6 +20,7 @@ type Ctx = {
 
 const EnquiryCtx = createContext<Ctx | null>(null);
 
+/** Opens the "Request to book" sheet from anywhere (package cards, occasions, sticky bars). */
 export function EnquiryProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [prefill, setPrefill] = useState<EnquiryPrefill>({});

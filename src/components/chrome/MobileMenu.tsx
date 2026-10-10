@@ -14,7 +14,7 @@ import { handleHashLink } from "./scrollLink";
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(site.nav[0].label);
-  const photo = site.navPhotos[active] ?? site.spaces[0].image.src;
+  const photo = site.navPhotos[active] ?? site.occasions[0].image.src;
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>

@@ -29,7 +29,8 @@ export function Header() {
         scrolled
           ? "border-b border-line bg-cream/70 backdrop-blur-[14px] backdrop-saturate-150"
           : "border-b border-transparent bg-transparent",
-        scrolled && night && "theme-night bg-night/70",
+        night && "theme-night",
+        scrolled && night && "bg-night/70",
       )}
     >
       <div className="container-x flex h-[var(--header-h)] items-center justify-between gap-6">
@@ -57,9 +58,12 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Link href="/list-your-farmhouse" className="link-draw mr-2 hidden text-[0.9rem] font-medium text-ink xl:inline">
+            List your farmhouse
+          </Link>
           <Button asChild size="sm" className="px-5">
-            <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
-              Book
+            <Link href="/bhopal" data-cursor="Book">
+              Find a farmhouse
             </Link>
           </Button>
           <MobileMenu />

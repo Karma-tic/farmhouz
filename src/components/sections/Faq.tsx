@@ -4,12 +4,12 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Accordion } from "radix-ui";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
-import { site, type Faq as FaqItem, type FaqGroup } from "@/content/site";
+import { site, type Faq as FaqItem } from "@/content/site";
 
-const groups: FaqGroup[] = ["Booking", "At the farm", "Rules"];
 
 export function Faq() {
   const faqs = site.faqs as FaqItem[];
+  const groups = [...new Set(faqs.map((f) => f.group))];
   return (
     <section
       id="faq"
@@ -31,7 +31,7 @@ export function Faq() {
               <>
                 Still curious? Read the full{" "}
                 <Link href="/policies" className="link-draw text-wheat">
-                  house rules & cancellation policy
+                  booking terms & cancellation policy
                 </Link>
                 .
               </>

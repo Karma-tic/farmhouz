@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { ViewTransition } from "react";
+import { Suspense, ViewTransition } from "react";
 import { Cursor } from "@/components/chrome/Cursor";
 import { Header } from "@/components/chrome/Header";
 import { Loader, loaderScript } from "@/components/chrome/Loader";
@@ -55,7 +55,7 @@ const jetbrains = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} — Farmhouse stays, parties & celebrations near ${site.location.city}`,
+    default: `${site.name} — Farmhouses in Bhopal for stays, parties & weddings`,
     template: `%s · ${site.name}`,
   },
   description: site.description,
@@ -102,7 +102,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Header />
           <ViewTransition>{children}</ViewTransition>
           <EnquirySheet />
-          <MobileBookingBar />
+          <Suspense fallback={null}>
+            <MobileBookingBar />
+          </Suspense>
         </EnquiryProvider>
         <SunClock />
         <Cursor />

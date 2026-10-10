@@ -1,89 +1,86 @@
 # Farmhouze
 
-Website for **Farmhouze** — a private farmhouse for day outs, weekend stays, birthdays, haldi & mehendi, small weddings, shoots and offsites.
+**Bhopal's farmhouses, checked and booked for you.** Farmhouze is a booking agent: guests pick a farmhouse and send a free request, you confirm with the owner, the guest pays an advance by UPI, and they get a booking pass.
 
-Scrolling the homepage is living one day at the farm: the sky, light and shadows move from misty dawn to bonfire night, and a small sun-clock in the corner tells the time. Every section leads to one thing — a booking enquiry.
+Scrolling the site is still "a day at the farm" — the sky moves from dawn to bonfire night — and each booking's tracking page is lit by its status: dawn when requested, golden hour when it's free, night when it's booked.
 
-Built with Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS 4, GSAP + ScrollTrigger, Lenis, Motion, React Three Fiber, react-day-picker, react-hook-form + zod, Radix primitives and Resend.
+Built with Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS 4, Postgres (`postgres`), GSAP, Lenis, Motion, React Three Fiber, react-day-picker, react-hook-form + zod, Radix and Resend.
 
 ---
 
-## Run it locally
+## How a booking works
+
+| Step | Guest sees (`/booking/<code>`) | You do (`/admin`) |
+|---|---|---|
+| 1 · **Request** | Picks farmhouse + dates + guests → "We're checking with the owner" (page updates by itself) | Get an email (if Resend is set up) and see it under **Needs you** |
+| 2 · **Check** | — | Tap **Ask owner if free** (prefilled WhatsApp to the owner) |
+| 3a · **Available** | Quote, 30% advance, 24-hour hold countdown, UPI QR / app link, "I've paid" form | Enter the quote → **Send quote & hold dates**; tap **WhatsApp guest** to nudge them |
+| 3b · **Not available** | Nearest free dates + similar free farmhouses; switch with one tap (goes back to step 1) | **Not available** → pick dates/farms to suggest (auto-suggestions pre-selected) |
+| 4 · **Paid** | "Verifying your payment" | Check the UTR in your bank app → **Received — confirm booking** (or **Can't find it**) |
+| 5 · **Booked** | Booking pass: exact address, caretaker, times, balance, add-to-calendar | **Send booking to owner** (prefilled WhatsApp); dates are blocked automatically |
+
+A lapsed hold shows as **expired**; the guest can tap "Check again". Exact addresses and owner numbers never reach the browser until a booking is confirmed (they live in `src/content/owners.server.ts`).
+
+## Setup (one time)
+
+1. **Database (required for bookings).** In Vercel → your project → **Storage** → create a **Neon** Postgres database and connect it to the project. That adds `DATABASE_URL` automatically. Tables are created on first use.
+   *Without a database the site still works; the request form shows a "Send on WhatsApp" fallback.*
+2. **Admin password.** Vercel → Settings → Environment Variables:
+   - `ADMIN_PASSWORD` — your admin password (choose a long one)
+   - `ADMIN_SECRET` — any long random string (signs your login cookie)
+3. **Payments.** `NEXT_PUBLIC_UPI_ID` (e.g. `yourname@okhdfcbank`) and `NEXT_PUBLIC_UPI_NAME` (the name guests see).
+4. **Emails (optional).** `RESEND_API_KEY`, `ADMIN_EMAIL` (where new requests go), `EMAIL_FROM` (a verified sender).
+5. **Domain.** `NEXT_PUBLIC_SITE_URL` once you have one (used in links, sitemap, Open Graph).
+6. Redeploy. Open `/admin` and sign in.
+
+See `.env.example` for the full list.
+
+## Editing content
+
+| What | File |
+|---|---|
+| Farmhouses (name, area, capacity, prices, photos, spaces, amenities, rules) | `src/content/farmhouses.ts` |
+| **Private** owner/caretaker contacts and exact addresses | `src/content/owners.server.ts` |
+| Cities and areas (add Indore later by setting `live: true` and adding areas) | `src/content/cities.ts` |
+| Brand, WhatsApp/phone, advance %, hold hours, FAQ, cancellation policy | `src/content/site.ts` |
+
+**Add a farmhouse:** copy one object in `farmhouses.ts`, give it a new `slug`, set `sample: false`, add its photos to `public/media/farms/<slug>/`, and add the owner in `owners.server.ts` with the same slug. It appears on `/bhopal`, the map and the sitemap.
+
+**Before launch:** all 8 listings are **samples** (marked "Sample"). Replace them with real, visited properties, then set `previewMode: false` in `site.ts`. Replace every `OWNER TO FILL`.
+
+**Block dates** (owner's own bookings, maintenance): `/admin/calendar`.
+
+**Reviews:** only real ones, in `site.reviews`. The section stays hidden until there's at least one.
+
+## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local   # optional — see "Enquiry emails" below
-npm run dev                  # http://localhost:3000
+cp .env.example .env.local      # set DATABASE_URL to any Postgres, plus ADMIN_PASSWORD
+npm run dev                     # http://localhost:3000  ·  admin at /admin
 ```
 
-Other scripts: `npm run build`, `npm start`, `npm run lint`.
-Regenerate placeholder media: `node scripts/generate-placeholders.mjs` (needs `ffmpeg`).
+`npm run build`, `npm run lint`. Regenerate placeholder media: `node scripts/generate-placeholders.mjs` (needs ffmpeg).
 
-## Editing content (no code needed)
-
-Everything a visitor reads lives in **`src/content/site.ts`**. Search for `OWNER TO FILL` and replace each placeholder.
-
-| What | Where in `site.ts` |
-|---|---|
-| Address, distance, drive time, Google Maps link, lat/lng, landmarks | `location` |
-| Bedrooms, guests, acres | `capacity` |
-| WhatsApp (digits only, with 91), phone, email, Instagram, Google profile | `contact` |
-| Package names, timings, inclusions and **prices** (`priceFrom`: a number in ₹, or `null` to show "₹—") | `packages` |
-| Spaces walk-through (Lawn, Pool, Rooms, Orchard, Bonfire) | `spaces` |
-| Amenities — set `enabled: false` to hide one everywhere | `amenities` |
-| Gallery photos and their categories | `gallery.photos` |
-| Celebrations, rotating headline words, decor partners | `celebrations` |
-| House rules, cancellation policy, check-in/out, music cut-off | `rules`, `cancellation`, `times` |
-| FAQ (grouped Booking / At the farm / Rules) | `faqs` |
-| Guest reviews | `reviews` |
-
-**Reviews:** add only real guest reviews. The Reviews section stays hidden until the list has at least one entry; until then a "Rated on Google" link (to `contact.googleProfile`) is shown instead.
-
-**Booked dates:** edit `src/content/availability.json` (inclusive `from`/`to` ranges), or set `NEXT_PUBLIC_ICS_URL` to a public Google Calendar iCal link — every event on that calendar blocks those dates. The feed is cached for 15 minutes.
-
-**Photos & video:** drop real files into `public/media/` using the exact same file names (see **[ASSETS.md](./ASSETS.md)**). Every current image is a generated placeholder with a small "TODO-replace" tag.
-
-## Enquiry emails
-
-The form posts to `/api/enquiry`, which validates the data (same zod schema as the browser) and:
-
-- emails it with **Resend** when `RESEND_API_KEY` is set (`ENQUIRY_TO` = recipient, `ENQUIRY_FROM` = verified sender), or
-- logs it on the server when no key is set.
-
-After sending, guests can also forward the same enquiry on WhatsApp. There is no account creation or payment on the site.
-
-## How it's built
+## Project structure
 
 ```
-src/
-  app/                    routes: / , /stay, /celebrations, /policies, /api/enquiry, /api/availability, sitemap, robots
-  content/                site.ts (all copy) · availability.json
-  components/
-    sections/             one component per homepage section (Hero, Numbers, Spaces, Packages, Gallery, …, Footer)
-    chrome/               header, mobile menu, sun-clock, cursor, intro loader, mobile booking bar
-    enquiry/              calendar, form, enquiry sheet
-    providers/            DaylightProvider (scroll → time of day), SmoothScroll (Lenis + ScrollTrigger)
-    three/                Embers — WebGL ember/firefly field (loaded only near the night section)
-  lib/motion/             useDaylight, useMagnetic, usePinTimeline, daylight maths, lazy GSAP loader
-  fonts/                  self-hosted Fraunces / Karla / JetBrains Mono
+src/app/
+  page.tsx                       home: hero search, how it works, featured farms, occasions, areas map, FAQ
+  [city]/page.tsx                /bhopal — filters, results, map
+  [city]/[slug]/page.tsx         a farmhouse: spaces walk-through, packages, gallery, calendar + request form
+  booking/[code]/page.tsx        guest's live tracker
+  admin/…                        inbox, booking detail, calendar, owner leads
+  list-your-farmhouse/           owner applications
+  api/bookings …                 create / status / guest actions (payment, switch, withdraw)
+  api/admin/…                    login, bookings, actions, blocks, leads
+src/lib/booking/                 schema (zod), repo (SQL), dates, WhatsApp/email messages
+src/lib/db.ts                    Postgres client + schema
+src/components/{booking,farm,search,admin,sections,…}
 ```
 
-- **Daylight:** each section declares `data-daylight="0…1"`. `DaylightProvider` interpolates between sections by scroll position and writes the sky gradient, light tint and shadow angle as CSS variables. Colours are tokens in `src/app/globals.css` — components never hard-code hex values.
-- **Motion:** desktop gets pinned scenes (hero drone flight, Spaces walk-through), smooth scrolling, a magnetic CTA and a companion cursor. GSAP and Lenis are loaded on demand, so phones never download them. Every animation has a static equivalent under `prefers-reduced-motion`.
-- **Fonts:** self-hosted via `next/font/local` (no request to Google). Fraunces is pre-instanced at `SOFT 50` with weights 300–600 and subset to Latin to keep it small.
+Status machine: `checking → available → payment_review → confirmed`, with `unavailable`, `expired` and `cancelled` branches (see `src/lib/booking/types.ts`).
 
-## Deploy (Vercel)
+## Deploy
 
-1. Push this repo to GitHub.
-2. In Vercel, **Add New → Project → import `farmhouze`** (framework is detected automatically), or run `npx vercel --prod` from this folder.
-3. Add the environment variables from `.env.example` in **Project → Settings → Environment Variables**.
-4. Point your domain at the project and update `site.url` in `site.ts` (used for canonical URLs, sitemap and Open Graph).
-
-## Quality checks
-
-Before launch, with real photos in place:
-
-- `npm run lint` and `npm run build` pass (TypeScript strict).
-- Lighthouse (mobile) for Performance, Accessibility, Best Practices, SEO.
-- Toggle the OS "Reduce motion" setting and scroll the whole page.
-- Check widths 375, 768, 1024, 1440, 1920.
+Pushing to `main` deploys on Vercel automatically.

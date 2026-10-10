@@ -1,19 +1,18 @@
 "use client";
 
-import { ArrowUpRight, Star } from "lucide-react";
 import dynamic from "next/dynamic";
 import { LazyMount } from "@/components/ui/lazy-mount";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { site } from "@/content/site";
+import type { Farmhouse } from "@/content/types";
 
-/** Conversion core: live availability on the left, the enquiry form on the right. */
 const BookingPanel = dynamic(() => import("@/components/enquiry/BookingPanel"), {
   ssr: false,
   loading: () => <div className="min-h-[760px] lg:min-h-[640px]" aria-busy="true" />,
 });
 
-export function Booking() {
-
+/** Conversion core on a farmhouse page: availability + request to book. */
+export function Booking({ farm }: { farm: Farmhouse }) {
   return (
     <section id="book" data-daylight="0.7" aria-labelledby="book-title" className="relative py-[clamp(5rem,12vw,9rem)]">
       <div className="container-x">
@@ -26,25 +25,12 @@ export function Booking() {
                 Pick your <span className="italic-soft text-terra">dates</span>.
               </>
             }
-            intro="Struck-through dates are taken. Send an enquiry and we'll confirm availability and a final quote on a call."
+            intro={`Send a free request for ${farm.name}. We check with the owner and get back to you within ${site.booking.checkWithin} — you only pay once it's confirmed.`}
           />
-          {site.reviews.length === 0 && (
-            <a
-              href={site.contact.googleProfile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link-draw inline-flex min-h-11 items-center gap-2 self-start font-medium text-sage md:self-end"
-            >
-              <Star className="size-4" strokeWidth={1.5} aria-hidden="true" />
-              Rated on Google
-              <ArrowUpRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
-            </a>
-          )}
         </div>
-
         <Reveal className="overflow-hidden rounded-[28px] border border-line bg-card shadow-lift">
           <LazyMount minHeight={700}>
-            <BookingPanel />
+            <BookingPanel farmSlug={farm.slug} />
           </LazyMount>
         </Reveal>
       </div>

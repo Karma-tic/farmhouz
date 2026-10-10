@@ -33,7 +33,7 @@ export function SunClock() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="pointer-events-none fixed bottom-4 left-4 z-40 hidden items-center gap-2 rounded-full border border-line bg-card/75 py-1.5 pl-2 pr-3.5 shadow-soft backdrop-blur-md transition-colors duration-500 md:flex"
+      className="sun-clock pointer-events-none fixed bottom-4 left-4 z-40 hidden items-center gap-2 rounded-full border border-line bg-card/75 py-1.5 pl-2 pr-3.5 shadow-soft backdrop-blur-md transition-colors duration-500 md:flex"
     >
       <svg viewBox="0 0 64 34" className="h-6 w-11 text-muted">
         <path d="M6 30 A 26 22 0 0 1 58 30" fill="none" stroke="currentColor" strokeDasharray="2 3" strokeWidth="1" />

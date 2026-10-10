@@ -2,12 +2,10 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { PageTeaser } from "@/components/subpage/PageTeaser";
 import { SectionHeading } from "@/components/ui/reveal";
-import { site } from "@/content/site";
+import type { Farmhouse } from "@/content/types";
 import { usePinTimeline } from "@/lib/motion/usePinTimeline";
 
-const spaces = site.spaces;
 
 function Chips({ chips }: { chips: readonly string[] }) {
   return (
@@ -26,7 +24,8 @@ function Chips({ chips }: { chips: readonly string[] }) {
  * photos crossfade and slowly zoom on the left while the copy swaps on the right.
  * Mobile is a snap carousel; reduced motion is a plain stacked list.
  */
-export function Spaces() {
+export function Spaces({ farm }: { farm: Farmhouse }) {
+  const spaces = farm.spaces;
   const pinRef = useRef<HTMLDivElement>(null);
 
   usePinTimeline(
@@ -48,6 +47,7 @@ export function Spaces() {
       tl.to({}, { duration: 0.6 });
     },
     { length: `+=${spaces.length * 75}%` },
+    // spaces differ per farmhouse; the hook reads them once per mount
   );
 
   return (
@@ -61,9 +61,8 @@ export function Spaces() {
               Walk the farm, <span className="italic-soft text-terra">one corner</span> at a time.
             </>
           }
-          intro={`${site.capacity.acres} acres of lawn, water, orchard and fire — and all of it is yours for the day.`}
+          intro={`${farm.acres} acres, and all of it is yours for the day.`}
         />
-        <PageTeaser href="/stay" label="Rooms & amenities" image={site.spaces[2].image} transitionName="stay-hero" />
       </div>
 
       {/* Desktop: pinned walk-through */}

@@ -4,8 +4,9 @@ import { MapPin, MessageCircle } from "lucide-react";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { handleHashLink } from "@/components/chrome/scrollLink";
+import { SearchBar } from "@/components/search/SearchBar";
 import { Button } from "@/components/ui/button";
+import { published } from "@/content/farmhouses";
 import { defaultWhatsappText, site, whatsappLink } from "@/content/site";
 import { mq } from "@/lib/motion/gsap";
 import { usePinTimeline } from "@/lib/motion/usePinTimeline";
@@ -182,7 +183,7 @@ export function Hero() {
         <div className="container-x">
           <p style={{ "--i": 3 } as React.CSSProperties} className="hero-fade eyebrow mb-5 flex items-center gap-2 text-moon/90">
             <MapPin className="size-4" strokeWidth={1.5} aria-hidden="true" />
-            {site.location.kmFromCity} km from {site.location.city} · sleeps {site.capacity.sleeps} · events up to {site.capacity.eventGuests}
+            Bhopal · {published.length} handpicked farmhouses · availability checked for you
           </p>
           <h1 id="hero-title" className="display display-xl max-w-[14ch] text-moon">
             {site.hero.headline.map((l, i) => (
@@ -193,10 +194,13 @@ export function Hero() {
               </span>
             ))}
           </h1>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="hero-fade mt-8 hidden md:block" style={{ "--i": 4 } as React.CSSProperties}>
+            <SearchBar tone="glass" />
+          </div>
+          <div className="mt-8 flex flex-wrap items-center gap-3 md:hidden">
             <Button asChild size="lg" className="hero-fade" style={{ "--i": 4 } as React.CSSProperties}>
-              <Link ref={ctaRef} href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
-                Check availability
+              <Link ref={ctaRef} href="/bhopal" data-cursor="Book">
+                Find a farmhouse
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="hero-fade text-moon" style={{ "--i": 5 } as React.CSSProperties}>

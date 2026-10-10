@@ -156,6 +156,15 @@ canvas {
 }
 
 /* ----------------------------------------------------------- themes */
+/* day tokens again, for light cards placed inside a night section */
+.theme-day {
+  --ink: #231f1a;
+  --muted: #5c5448;
+  --line: #e2d9c6;
+  --card: #fbf8f1;
+  --sage: #4a5a3c;
+  color: var(--ink);
+}
 .theme-night {
   --ink: var(--moon);
   --muted: var(--night-muted);
@@ -494,4 +503,17 @@ html.lenis body {
 }
 .faq-content[data-state="closed"] {
   animation: faq-close var(--dur-ui) var(--ease-out);
+}
+
+/* admin calendar */
+.rdp-root .fz-day-manual .rdp-day_button {
+  background: var(--terra);
+  color: var(--cream);
+}
+.rdp-root .fz-day-booking .rdp-day_button {
+  background: var(--sage);
+  color: var(--cream);
+}
+html[data-admin] .sun-clock {
+  display: none;
 }

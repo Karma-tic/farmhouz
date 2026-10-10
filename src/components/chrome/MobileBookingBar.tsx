@@ -2,14 +2,24 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { formatPrice, lowestNightly } from "@/content/site";
+import { useEnquiry } from "@/components/enquiry/EnquiryContext";
+import { fromPrice, getFarmhouse } from "@/content/farmhouses";
+import { formatPrice } from "@/content/site";
 import { cn } from "@/lib/utils";
-import { handleHashLink } from "./scrollLink";
 
-/** Mobile-only bar that appears after the hero; hides on scroll down, returns on scroll up. */
+/**
+ * Mobile-only bar that appears after the hero; hides on scroll down, returns on
+ * scroll up. On a farmhouse page it opens "Request to book"; elsewhere it links to search.
+ */
 export function MobileBookingBar() {
   const [visible, setVisible] = useState(false);
+  const path = usePathname();
+  const { openEnquiry } = useEnquiry();
+  const farmSlug = path.split("/")[2];
+  const farm = farmSlug ? getFarmhouse(farmSlug) : undefined;
+  const hidden = path.startsWith("/booking") || path.startsWith("/admin") || path === "/bhopal" || path === "/list-your-farmhouse";
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -26,27 +36,43 @@ export function MobileBookingBar() {
     return () => window.removeEventListener("scroll", on);
   }, []);
 
+  if (hidden) return null;
+  const show = visible;
+  const price = farm ? fromPrice(farm) : null;
+  const inner = (
+    <>
+      <span className="text-sm">
+        {farm ? (
+          <>
+            From <span className="font-mono font-medium tracking-wide">{formatPrice(price?.amount)}</span> / {price?.unit}
+          </>
+        ) : (
+          "8 farmhouses around Bhopal"
+        )}
+      </span>
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-wheat px-4 py-2 text-sm font-medium text-on-wheat">
+        {farm ? "Request to book" : "Find one"} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
+      </span>
+    </>
+  );
+  const cls = "flex min-h-14 w-full items-center justify-between gap-3 rounded-full bg-ink px-5 text-left text-cream shadow-lift";
   return (
     <div
       className={cn(
         "fixed inset-x-3 bottom-3 z-40 transition-[transform,opacity] duration-[var(--dur-ui)] ease-[var(--ease-out)] md:hidden",
-        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[130%] opacity-0",
+        show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-[130%] opacity-0",
       )}
-      aria-hidden={!visible}
+      aria-hidden={!show}
     >
-      <Link
-        href="/#book"
-        tabIndex={visible ? 0 : -1}
-        onClick={(e) => handleHashLink(e, "/#book")}
-        className="flex min-h-14 items-center justify-between gap-3 rounded-full bg-ink px-5 text-cream shadow-lift"
-      >
-        <span className="text-sm">
-          From <span className="font-mono font-medium tracking-wide">{formatPrice(lowestNightly())}</span> / night
-        </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-wheat px-4 py-2 text-sm font-medium text-on-wheat">
-          Check dates <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
-        </span>
-      </Link>
+      {farm ? (
+        <button type="button" tabIndex={show ? 0 : -1} onClick={() => openEnquiry({ farmSlug: farm.slug })} className={cls}>
+          {inner}
+        </button>
+      ) : (
+        <Link href="/bhopal" tabIndex={show ? 0 : -1} className={cls}>
+          {inner}
+        </Link>
+      )}
     </div>
   );
 }

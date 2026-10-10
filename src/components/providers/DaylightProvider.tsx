@@ -45,7 +45,9 @@ export function DaylightProvider() {
 
     const update = () => {
       raf = 0;
-      const d = valueAt(window.scrollY + window.innerHeight / 2);
+      // a page can pin the time of day (e.g. the booking tracker follows the booking's status)
+      const fixed = root.dataset.daylightFixed;
+      const d = fixed ? Number(fixed) : valueAt(window.scrollY + window.innerHeight / 2);
       if (Math.abs(d - last) < 0.0005) return;
       last = d;
       const s = skyAt(d);
@@ -69,10 +71,16 @@ export function DaylightProvider() {
     ro.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", measure);
+    const force = () => {
+      last = -1;
+      update();
+    };
+    window.addEventListener("fz:daylight", force);
     return () => {
       ro.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", measure);
+      window.removeEventListener("fz:daylight", force);
       cancelAnimationFrame(raf);
     };
   }, []);

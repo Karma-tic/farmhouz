@@ -1,22 +1,14 @@
-import { cacheLife } from "next/cache";
-import { expandRanges, parseIcs, staticBooked } from "@/lib/enquiry/availability";
+import { connection } from "next/server";
+import { handle } from "@/lib/api";
+import { blockedByFarm } from "@/lib/booking/repo";
+import { dbConfigured } from "@/lib/db";
 
-/** Fetches the optional public Google Calendar ICS feed; cached for 15 minutes. */
-async function icsBooked(url: string) {
-  "use cache";
-  cacheLife({ stale: 900, revalidate: 900, expire: 3600 });
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return [];
-    return expandRanges(parseIcs(await res.text()));
-  } catch {
-    return [];
-  }
-}
-
-export async function GET() {
-  const url = process.env.NEXT_PUBLIC_ICS_URL;
-  const fromIcs = url ? await icsBooked(url) : [];
-  const booked = [...new Set([...staticBooked, ...fromIcs])].sort();
-  return Response.json({ booked, source: url ? "json+ics" : "json" });
+/** Booked days per farmhouse: { "mango-grove-kerwa": ["2026-11-14", …], … } */
+export async function GET(req: Request) {
+  await connection();
+  const city = new URL(req.url).searchParams.get("city") ?? "bhopal";
+  if (!dbConfigured()) return Response.json({ ok: true, booked: {} });
+  return handle(async () =>
+    Response.json({ ok: true, booked: await blockedByFarm(city) }, { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" } }),
+  );
 }

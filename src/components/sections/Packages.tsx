@@ -6,12 +6,14 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
-import { formatPrice, site, type Package } from "@/content/site";
+import { packagesFor } from "@/content/farmhouses";
+import { formatPrice } from "@/content/site";
+import type { Farmhouse, Package } from "@/content/types";
 
-function PackageCard({ pkg, index }: { pkg: Package; index: number }) {
+function PackageCard({ pkg, index, farmSlug }: { pkg: Package; index: number; farmSlug: string }) {
   const ref = useRef<HTMLButtonElement>(null);
   const { openEnquiry, open, prefill } = useEnquiry();
-  const morphId = `pkg-${pkg.id}`;
+  const morphId = `pkg-${farmSlug}-${pkg.id}`;
   const morphing = open && prefill.morphId === morphId;
 
   // 3D tilt (≤ 6°) + cursor spotlight, desktop fine pointers only
@@ -38,9 +40,9 @@ function PackageCard({ pkg, index }: { pkg: Package; index: number }) {
         type="button"
         onPointerMove={onMove}
         onPointerLeave={onLeave}
-        onClick={() => openEnquiry({ packageId: pkg.id, morphId })}
+        onClick={() => openEnquiry({ farmSlug, packageId: pkg.id, morphId })}
         data-cursor="Book"
-        aria-label={`${pkg.name}: ${pkg.bestFor}. From ${formatPrice(pkg.priceFrom)} per ${pkg.priceUnit}. Enquire about this package`}
+        aria-label={`${pkg.name}: ${pkg.bestFor}. From ${formatPrice(pkg.priceFrom)} per ${pkg.priceUnit}. Request to book this package`}
         className="group relative flex h-full w-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-card text-left shadow-soft transition-[transform,box-shadow] duration-[var(--dur-ui)] ease-[var(--ease-out)] [transform:rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] [transform-style:preserve-3d] hover:shadow-lift"
       >
         {/* spotlight */}
@@ -99,7 +101,8 @@ function PackageCard({ pkg, index }: { pkg: Package; index: number }) {
   );
 }
 
-export function Packages() {
+export function Packages({ farm }: { farm: Farmhouse }) {
+  const packages = packagesFor(farm);
   return (
     <section id="packages" data-daylight="0.46" aria-labelledby="packages-title" className="relative py-[clamp(5rem,12vw,9rem)]">
       <div className="container-x mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -111,13 +114,13 @@ export function Packages() {
               Choose <span className="italic-soft text-terra">your</span> day.
             </>
           }
-          intro="Every booking is the whole farm, just for your group. Pick a starting point; we'll shape the rest on a call."
+          intro={`Every booking is the whole of ${farm.name}, just for your group. Pick a starting point; we confirm the exact quote with the owner.`}
         />
-        <p className="eyebrow text-muted md:text-right">Final quote on call · no payment online</p>
+        <p className="eyebrow text-muted md:text-right">Indicative prices · exact quote after we check</p>
       </div>
       <ul className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-[var(--gutter)] pb-6 md:container-x md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
-        {site.packages.map((p, i) => (
-          <PackageCard key={p.id} pkg={p} index={i} />
+        {packages.map((p, i) => (
+          <PackageCard key={p.id} pkg={p} index={i} farmSlug={farm.slug} />
         ))}
       </ul>
     </section>
