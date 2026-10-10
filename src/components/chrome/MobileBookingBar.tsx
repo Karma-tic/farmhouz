@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
-import { fromPrice, getFarmhouse } from "@/content/farmhouses";
+import { handleHashLink } from "@/components/chrome/scrollLink";
+import { farmhousesIn, fromPrice, getFarmhouse } from "@/content/farmhouses";
 import { formatPrice } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,8 @@ export function MobileBookingBar() {
   if (hidden) return null;
   const show = visible;
   const price = farm ? fromPrice(farm) : null;
+  const nights = farmhousesIn("bhopal").flatMap((f) => (f.price.night != null ? [f.price.night] : []));
+  const lowestNight = nights.length ? Math.min(...nights) : null;
   const inner = (
     <>
       <span className="text-sm">
@@ -47,11 +50,13 @@ export function MobileBookingBar() {
             From <span className="font-mono font-medium tracking-wide">{formatPrice(price?.amount)}</span> / {price?.unit}
           </>
         ) : (
-          "8 farmhouses around Bhopal"
+          <>
+            From <span className="font-mono font-medium tracking-wide">{formatPrice(lowestNight)}</span> / night
+          </>
         )}
       </span>
       <span className="inline-flex items-center gap-1.5 rounded-full bg-wheat px-4 py-2 text-sm font-medium text-on-wheat">
-        {farm ? "Request to book" : "Find one"} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
+        {farm ? "Request to book" : "Check dates"} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
       </span>
     </>
   );
@@ -69,7 +74,7 @@ export function MobileBookingBar() {
           {inner}
         </button>
       ) : (
-        <Link href="/bhopal" tabIndex={show ? 0 : -1} className={cls}>
+        <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book")} tabIndex={show ? 0 : -1} className={cls}>
           {inner}
         </Link>
       )}

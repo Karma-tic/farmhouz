@@ -3,7 +3,7 @@
  * Farmhouses live in farmhouses.ts, cities & areas in cities.ts.
  * Anything marked `OWNER TO FILL` is a placeholder to replace before launch.
  */
-import type { Faq, GalleryCategory, GalleryPhoto, Media, OccasionId, PackageId, Review } from "./types";
+import type { Faq, GalleryCategory, GalleryPhoto, Media, OccasionId, Package, PackageId, Review } from "./types";
 
 export type { Faq, GalleryCategory, GalleryPhoto, Media, Phase, Review } from "./types";
 
@@ -71,6 +71,76 @@ export const site = {
     { id: "pay", time: "04:30 PM", title: "Pay the advance", body: "Dates are free? We hold them for 24 hours while you pay a 30% advance by UPI." },
     { id: "booked", time: "09:00 PM", title: "It's booked", body: "You get your booking pass with the exact address, check-in time and caretaker's number." },
   ],
+
+  /** "Choose your day" — the six ways to book, shown on the homepage */
+  packages: [
+    {
+      id: "day-out",
+      name: "Day Out",
+      bestFor: "Families and friends who want one slow day",
+      timing: "9:00 AM – 6:00 PM",
+      inclusions: ["Pool, lawn & orchard", "Indoor games", "Kitchen access"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "day",
+      pricing: "flat",
+      image: { src: `${P}/packages/day-out.webp`, alt: "Friends relaxing by the pool on a sunny afternoon", placeholder: true },
+    },
+    {
+      id: "night-stay",
+      name: "Night Stay",
+      bestFor: "Couples and small groups escaping for a night",
+      timing: "Check-in 12 PM · Check-out 11 AM",
+      inclusions: ["4 bedrooms", "Bonfire night", "Breakfast on request"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "night",
+      pricing: "per-night",
+      image: { src: `${P}/packages/night-stay.webp`, alt: "The farmhouse lit up at night under the stars", placeholder: true },
+    },
+    {
+      id: "weekend-escape",
+      name: "Weekend Escape",
+      bestFor: "Two full nights to actually switch off",
+      timing: "Friday or Saturday check-in · 2 nights",
+      inclusions: ["Whole property", "Two bonfire nights", "Cook on request"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "night",
+      pricing: "per-night",
+      image: { src: `${P}/packages/weekend-escape.webp`, alt: "Chai on the porch with fields stretching to the horizon", placeholder: true },
+    },
+    {
+      id: "celebrations",
+      name: "Celebrations",
+      bestFor: "Birthdays, haldi & mehendi, small weddings",
+      timing: "Day or overnight · up to 150 guests",
+      inclusions: ["Lawn & party hall", "Decorator access", "Power backup"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "event",
+      pricing: "flat",
+      image: { src: `${P}/packages/celebrations.webp`, alt: "Marigold decor and fairy lights set up on the lawn", placeholder: true },
+    },
+    {
+      id: "shoots",
+      name: "Shoots",
+      bestFor: "Pre-wedding, fashion and brand shoots",
+      timing: "Golden-hour slots available",
+      inclusions: ["All locations", "Changing room", "Power points"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "shoot",
+      pricing: "flat",
+      image: { src: `${P}/packages/shoots.webp`, alt: "Couple walking through the orchard at golden hour", placeholder: true },
+    },
+    {
+      id: "corporate",
+      name: "Corporate Offsite",
+      bestFor: "Teams who think better outdoors",
+      timing: "Day or overnight · up to 60 people",
+      inclusions: ["Wi-Fi & projector", "Lawn sessions", "Meals arranged"],
+      priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
+      priceUnit: "day",
+      pricing: "flat",
+      image: { src: `${P}/packages/corporate.webp`, alt: "Team sitting in a circle on the lawn for an outdoor session", placeholder: true },
+    },
+  ] satisfies Package[],
 
   occasions: [
     { id: "birthday", name: "Birthday", description: "Pool by day, cake and a bonfire by night. Bring the playlist; the farm handles the lights.", packageId: "celebrations", image: { src: `${P}/celebrations/birthday.webp`, alt: "Birthday table on the lawn with balloons and fairy lights", placeholder: true } },
@@ -166,18 +236,20 @@ export const site = {
   reviews: [] as Review[],
 
   nav: [
-    { label: "Farmhouses", href: "/bhopal" },
-    { label: "How it works", href: "/#how" },
-    { label: "Occasions", href: "/#occasions" },
-    { label: "Areas", href: "/#areas" },
+    { label: "Farmhouses", href: "/#farmhouses" },
+    { label: "Packages", href: "/#packages" },
+    { label: "Celebrations", href: "/#celebrations" },
+    { label: "Gallery", href: "/#gallery" },
+    { label: "Location", href: "/#location" },
     { label: "FAQ", href: "/#faq" },
   ],
 
   navPhotos: {
     Farmhouses: `${P}/packages/day-out.webp`,
-    "How it works": `${P}/spaces/lawn.webp`,
-    Occasions: `${P}/celebrations/haldi.webp`,
-    Areas: `${P}/gallery/01.webp`,
+    Packages: `${P}/spaces/lawn.webp`,
+    Celebrations: `${P}/celebrations/haldi.webp`,
+    Gallery: `${P}/gallery/12.webp`,
+    Location: `${P}/gallery/01.webp`,
     FAQ: `${P}/spaces/bonfire.webp`,
   } as Record<string, string>,
 

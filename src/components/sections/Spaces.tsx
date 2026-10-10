@@ -1,9 +1,23 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 import { SectionHeading } from "@/components/ui/reveal";
-import type { Farmhouse } from "@/content/types";
+import type { Farmhouse, Media } from "@/content/types";
+
+/** One stop on the walk-through: a space of a farm, or a whole farmhouse on the homepage */
+export type WalkItem = { id: string; name: string; description: string; chips: readonly string[]; image: Media; href?: string; kicker?: string };
+
+function More({ href, name }: { href?: string; name: string }) {
+  if (!href) return null;
+  return (
+    <Link href={href} className="link-draw mt-7 inline-flex min-h-11 items-center gap-2 font-medium text-sage" data-cursor="View">
+      See {name} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
+    </Link>
+  );
+}
 import { usePinTimeline } from "@/lib/motion/usePinTimeline";
 
 
@@ -24,8 +38,24 @@ function Chips({ chips }: { chips: readonly string[] }) {
  * photos crossfade and slowly zoom on the left while the copy swaps on the right.
  * Mobile is a snap carousel; reduced motion is a plain stacked list.
  */
-export function Spaces({ farm }: { farm: Farmhouse }) {
-  const spaces = farm.spaces;
+export function Spaces({
+  farm,
+  items,
+  id = "spaces",
+  eyebrow = "The spaces · 10:00 AM",
+  title,
+  intro,
+  action,
+}: {
+  farm?: Farmhouse;
+  items?: WalkItem[];
+  id?: string;
+  eyebrow?: string;
+  title?: React.ReactNode;
+  intro?: string;
+  action?: React.ReactNode;
+}) {
+  const spaces: WalkItem[] = items ?? farm?.spaces ?? [];
   const pinRef = useRef<HTMLDivElement>(null);
 
   usePinTimeline(
@@ -51,18 +81,21 @@ export function Spaces({ farm }: { farm: Farmhouse }) {
   );
 
   return (
-    <section id="spaces" data-daylight="0.34" aria-labelledby="spaces-title" className="relative">
+    <section id={id} data-daylight="0.34" aria-labelledby={`${id}-title`} className="relative">
       <div className="container-x flex flex-col justify-between gap-8 pb-12 pt-8 md:flex-row md:items-end md:pb-16">
         <SectionHeading
-          id="spaces-title"
-          eyebrow="The spaces · 10:00 AM"
+          id={`${id}-title`}
+          eyebrow={eyebrow}
           title={
-            <>
-              Walk the farm, <span className="italic-soft text-terra">one corner</span> at a time.
-            </>
+            title ?? (
+              <>
+                Walk the farm, <span className="italic-soft text-terra">one corner</span> at a time.
+              </>
+            )
           }
-          intro={`${farm.acres} acres, and all of it is yours for the day.`}
+          intro={intro ?? (farm ? `${farm.acres} acres, and all of it is yours for the day.` : undefined)}
         />
+        {action}
       </div>
 
       {/* Desktop: pinned walk-through */}
@@ -92,9 +125,11 @@ export function Spaces({ farm }: { farm: Farmhouse }) {
               </div>
               {spaces.map((s) => (
                 <div key={s.id} className="sp-text absolute inset-x-0 top-16">
+                  {s.kicker && <p className="eyebrow mb-3 text-sage">{s.kicker}</p>}
                   <h3 className="display display-lg mb-5">{s.name}</h3>
                   <p className="mb-7 max-w-[34ch] text-lg text-muted">{s.description}</p>
                   <Chips chips={s.chips} />
+                  <More href={s.href} name={s.name} />
                 </div>
               ))}
             </div>
@@ -110,9 +145,11 @@ export function Spaces({ farm }: { farm: Farmhouse }) {
               <Image src={s.image.src} alt={s.image.alt} fill sizes="58vw" className="object-cover" />
             </div>
             <div className="col-span-5">
+              {s.kicker && <p className="eyebrow mb-3 text-sage">{s.kicker}</p>}
               <h3 className="display display-md mb-4">{s.name}</h3>
               <p className="mb-6 text-muted">{s.description}</p>
               <Chips chips={s.chips} />
+              <More href={s.href} name={s.name} />
             </div>
           </li>
         ))}
@@ -121,16 +158,18 @@ export function Spaces({ farm }: { farm: Farmhouse }) {
       {/* Mobile: snap carousel */}
       <ul
         className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter)] pb-16 md:hidden"
-        aria-label="Spaces at Farmhouze"
+        aria-label={typeof eyebrow === "string" ? eyebrow : "Walk-through"}
       >
         {spaces.map((s) => (
           <li key={s.id} className="w-[85vw] shrink-0 snap-center">
             <div className="relative mb-5 aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] shadow-soft">
               <Image src={s.image.src} alt={s.image.alt} fill sizes="85vw" className="object-cover" />
             </div>
+            {s.kicker && <p className="eyebrow mb-2 text-sage">{s.kicker}</p>}
             <h3 className="display display-md mb-3">{s.name}</h3>
             <p className="mb-5 text-muted">{s.description}</p>
             <Chips chips={s.chips} />
+            <More href={s.href} name={s.name} />
           </li>
         ))}
       </ul>

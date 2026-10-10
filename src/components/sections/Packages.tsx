@@ -7,13 +7,13 @@ import { useRef } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { packagesFor } from "@/content/farmhouses";
-import { formatPrice } from "@/content/site";
+import { formatPrice, site } from "@/content/site";
 import type { Farmhouse, Package } from "@/content/types";
 
-function PackageCard({ pkg, index, farmSlug }: { pkg: Package; index: number; farmSlug: string }) {
+function PackageCard({ pkg, index, farmSlug }: { pkg: Package; index: number; farmSlug?: string }) {
   const ref = useRef<HTMLButtonElement>(null);
   const { openEnquiry, open, prefill } = useEnquiry();
-  const morphId = `pkg-${farmSlug}-${pkg.id}`;
+  const morphId = `pkg-${farmSlug ?? "all"}-${pkg.id}`;
   const morphing = open && prefill.morphId === morphId;
 
   // 3D tilt (≤ 6°) + cursor spotlight, desktop fine pointers only
@@ -101,8 +101,8 @@ function PackageCard({ pkg, index, farmSlug }: { pkg: Package; index: number; fa
   );
 }
 
-export function Packages({ farm }: { farm: Farmhouse }) {
-  const packages = packagesFor(farm);
+export function Packages({ farm }: { farm?: Farmhouse }) {
+  const packages = farm ? packagesFor(farm) : (site.packages as Package[]);
   return (
     <section id="packages" data-daylight="0.46" aria-labelledby="packages-title" className="relative py-[clamp(5rem,12vw,9rem)]">
       <div className="container-x mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -114,13 +114,13 @@ export function Packages({ farm }: { farm: Farmhouse }) {
               Choose <span className="italic-soft text-terra">your</span> day.
             </>
           }
-          intro={`Every booking is the whole of ${farm.name}, just for your group. Pick a starting point; we confirm the exact quote with the owner.`}
+          intro={farm ? `Every booking is the whole of ${farm.name}, just for your group. Pick a starting point; we confirm the exact quote with the owner.` : "Every booking is a whole farm, just for your group. Pick how you want to spend it — we'll match the farmhouse and confirm with the owner."}
         />
         <p className="eyebrow text-muted md:text-right">Indicative prices · exact quote after we check</p>
       </div>
       <ul className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-[var(--gutter)] pb-6 md:container-x md:grid md:grid-cols-2 md:overflow-visible lg:grid-cols-3">
         {packages.map((p, i) => (
-          <PackageCard key={p.id} pkg={p} index={i} farmSlug={farm.slug} />
+          <PackageCard key={p.id} pkg={p} index={i} farmSlug={farm?.slug} />
         ))}
       </ul>
     </section>

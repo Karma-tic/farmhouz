@@ -58,12 +58,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href="/list-your-farmhouse" className="link-draw mr-2 hidden text-[0.9rem] font-medium text-ink xl:inline">
-            List your farmhouse
-          </Link>
           <Button asChild size="sm" className="px-5">
-            <Link href="/bhopal" data-cursor="Book">
-              Find a farmhouse
+            <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
+              Book
             </Link>
           </Button>
           <MobileMenu />

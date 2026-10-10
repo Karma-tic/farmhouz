@@ -4,6 +4,7 @@ import { MessageCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { handleHashLink } from "@/components/chrome/scrollLink";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { defaultWhatsappText, whatsappLink } from "@/content/site";
@@ -97,12 +98,12 @@ export function NightFinale() {
             Stay for the <span className="italic-soft text-wheat">night.</span>
           </h2>
           <p className="mx-auto mt-6 max-w-md text-night-muted">
-            The fire&apos;s lit, the music&apos;s low and there&apos;s nowhere you need to drive back to. Tell us your dates — we&apos;ll find the farm.
+            The fire&apos;s lit, the music&apos;s low and there&apos;s nowhere you need to drive back to.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/bhopal" data-cursor="Book">
-                Find your farmhouse
+              <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
+                Check availability
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-moon">

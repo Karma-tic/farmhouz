@@ -10,6 +10,7 @@ import { setScrollLocked } from "@/components/providers/SmoothScroll";
 import { Button } from "@/components/ui/button";
 import { getFarmhouse, packagesFor } from "@/content/farmhouses";
 import { site } from "@/content/site";
+import type { Package } from "@/content/types";
 import { useEnquiry } from "./EnquiryContext";
 
 const EnquiryForm = dynamic(() => import("./EnquiryForm").then((m) => m.EnquiryForm), {
@@ -24,7 +25,7 @@ const EnquiryForm = dynamic(() => import("./EnquiryForm").then((m) => m.EnquiryF
 export function EnquirySheet() {
   const { open, setOpen, prefill } = useEnquiry();
   const farm = prefill.farmSlug ? getFarmhouse(prefill.farmSlug) : undefined;
-  const pkg = farm ? packagesFor(farm).find((p) => p.id === prefill.packageId) : undefined;
+  const pkg = (farm ? packagesFor(farm) : (site.packages as Package[])).find((p) => p.id === prefill.packageId);
   const image = pkg?.image ?? farm?.cover ?? site.occasions[0].image;
 
   useEffect(() => setScrollLocked(open), [open]);

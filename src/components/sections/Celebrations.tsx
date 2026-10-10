@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { site } from "@/content/site";
@@ -43,13 +43,14 @@ function RotatingWord() {
 
 export function Celebrations() {
   const [active, setActive] = useState(0);
+  const { openEnquiry } = useEnquiry();
 
   return (
-    <section id="occasions" data-daylight="0.64" aria-labelledby="celebrations-title" className="relative pb-[clamp(5rem,12vw,9rem)]">
+    <section id="celebrations" data-daylight="0.64" aria-labelledby="celebrations-title" className="relative pb-[clamp(5rem,12vw,9rem)]">
       <div className="container-x">
         <div className="mb-12 flex flex-col justify-between gap-8 md:flex-row md:items-end">
         <Reveal as="header" className="max-w-4xl">
-          <p className="eyebrow mb-4 text-sage">Occasions · 06:15 PM</p>
+          <p className="eyebrow mb-4 text-sage">Celebrations · 06:15 PM</p>
           <h2 id="celebrations-title" className="display display-lg">
             Make it yours. <br />
             <RotatingWord />
@@ -98,10 +99,8 @@ export function Celebrations() {
                     className="mt-4 max-w-md animate-[fadeUp_.6s_var(--ease-out)_both]"
                   >
                     <p className="mb-5 text-moon/90">{c.description}</p>
-                    <Button asChild size="md">
-                      <Link href={`/bhopal?occasion=${c.id}`}>
-                        See farmhouses <ArrowRight />
-                      </Link>
+                    <Button size="md" onClick={() => openEnquiry({ packageId: c.packageId, occasion: c.name })}>
+                      Plan this <ArrowRight />
                     </Button>
                   </div>
                 </div>
@@ -120,10 +119,8 @@ export function Celebrations() {
                 <div className="theme-night absolute inset-x-0 bottom-0 p-5">
                   <h3 className="display mb-2 text-[2rem] leading-none text-moon">{c.name}</h3>
                   <p className="mb-4 text-moon/90">{c.description}</p>
-                  <Button asChild size="md">
-                      <Link href={`/bhopal?occasion=${c.id}`}>
-                        See farmhouses <ArrowRight />
-                      </Link>
+                  <Button size="md" onClick={() => openEnquiry({ packageId: c.packageId, occasion: c.name })}>
+                      Plan this <ArrowRight />
                     </Button>
                 </div>
               </div>

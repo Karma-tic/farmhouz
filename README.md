@@ -66,7 +66,7 @@ npm run dev                     # http://localhost:3000  ·  admin at /admin
 
 ```
 src/app/
-  page.tsx                       home: hero search, how it works, featured farms, occasions, areas map, FAQ
+  page.tsx                       home: drone hero, pinned farmhouse walk-through, packages, zoom gallery, celebrations, booking calendar, route map, FAQ, bonfire
   [city]/page.tsx                /bhopal — filters, results, map
   [city]/[slug]/page.tsx         a farmhouse: spaces walk-through, packages, gallery, calendar + request form
   booking/[code]/page.tsx        guest's live tracker
