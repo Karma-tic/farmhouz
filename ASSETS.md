@@ -1,6 +1,6 @@
 # Assets — what to shoot and where it goes
 
-The hero flight (`hero-flight-hd/`, `hero-poster-farmhouse-fhd.webp`, `hero-mobile-farmhouse-hd.mp4`, `hero-mobile-poster-farmhouse-hd.webp`) is now a generated drone video of an illustrative farmhouse. Every other file below is still a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
+The hero flight (`hero-flight-hd/`, `hero-poster-farmhouse-fhd.webp`, `hero-mobile-farmhouse-fhd.mp4`, `hero-mobile-poster-farmhouse-fhd.webp`) is now a generated drone video of an illustrative farmhouse. Every other file below is still a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
 
 Photography direction: warm grade, real moments — feet in the pool, chai on the porch, string lights at dusk, marigolds at a haldi. Natural light; avoid heavy filters and HDR.
 
@@ -24,12 +24,12 @@ If your clip is a different length, adjust `fps` so you end up with 120 frames, 
 
 | File | Spec |
 |---|---|
-| `hero-mobile-farmhouse-hd.mp4` | 1080×1920 vertical, 6–8 s, silent, loops, ≤ 2.5 MB, H.264 (optionally add an AV1 version) |
-| `hero-mobile-poster-farmhouse-hd.webp` | 1080×1920, first frame of the loop — this is the mobile LCP image, keep it ≤ 120 KB |
+| `hero-mobile-farmhouse-fhd.mp4` | 1080×1920 vertical, 6–8 s, silent, loops, ≤ 2.5 MB, H.264 (optionally add an AV1 version) |
+| `hero-mobile-poster-farmhouse-fhd.webp` | 1080×1920, first frame of the loop — this is the mobile LCP image, keep it ≤ 120 KB |
 
 ```bash
-ffmpeg -i drone.mp4 -vf "scale=1080:-2" -c:v libx264 -crf 26 -an -movflags +faststart public/media/hero-mobile-farmhouse-hd.mp4
-ffmpeg -i public/media/hero-mobile-farmhouse-hd.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 70 public/media/hero-mobile-poster-farmhouse-hd.webp
+ffmpeg -i drone.mp4 -vf "scale=1080:-2" -c:v libx264 -crf 26 -an -movflags +faststart public/media/hero-mobile-farmhouse-fhd.mp4
+ffmpeg -i public/media/hero-mobile-farmhouse-fhd.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 70 public/media/hero-mobile-poster-farmhouse-fhd.webp
 ```
 
 ## 3. Spaces — 5 photos, 2400 px wide (3:2)

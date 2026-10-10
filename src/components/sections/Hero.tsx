@@ -40,7 +40,7 @@ export function Hero() {
 
   // Art-directed LCP image: first drone frame on desktop, vertical poster on mobile
   const common = { alt: site.hero.poster.alt, sizes: "100vw", fetchPriority: "high", loading: "eager" } as const;
-  const { props: mobileImg } = getImageProps({ ...common, src: "/media/hero-mobile-poster-farmhouse-hd.webp", width: 692, height: 1232, quality: 80 });
+  const { props: mobileImg } = getImageProps({ ...common, src: "/media/hero-mobile-poster-farmhouse-fhd.webp", width: 900, height: 1600, quality: 80 });
   const { props: { srcSet: desktopSet, ...desktopImg } } = getImageProps({ ...common, src: frameSrc(0), width: 1152, height: 648, quality: 80 });
   const { props: { srcSet: reducedSet } } = getImageProps({ ...common, src: site.hero.poster.src, width: 1920, height: 1080, quality: 80 });
 
