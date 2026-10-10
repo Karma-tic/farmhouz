@@ -12,8 +12,15 @@ import { mq } from "@/lib/motion/gsap";
 import { usePinTimeline } from "@/lib/motion/usePinTimeline";
 import { useMagnetic } from "@/lib/motion/useMagnetic";
 
-const { frames, path } = site.hero.sequence;
-const frameSrc = (i: number) => `${path}/${String(i + 1).padStart(4, "0")}.webp`;
+const { frames, path, hdPath } = site.hero.sequence;
+const frameSrc = (i: number, base: string = path) => `${base}/${String(i + 1).padStart(4, "0")}.webp`;
+
+/** Full-HD frames only where they show (big or high-DPI canvas) and the connection can take them. */
+function pickFramePath(canvas: HTMLCanvasElement) {
+  const c = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  const slow = c?.saveData || (c?.effectiveType && c.effectiveType !== "4g");
+  return !slow && canvas.clientWidth * Math.min(window.devicePixelRatio || 1, 1.5) > 1300 ? hdPath : path;
+}
 
 /**
  * Signature moment — the drone arrival. On desktop a 120-frame image sequence is
@@ -35,7 +42,7 @@ export function Hero() {
   const common = { alt: site.hero.poster.alt, sizes: "100vw", fetchPriority: "high", loading: "eager" } as const;
   const { props: mobileImg } = getImageProps({ ...common, src: "/media/hero-mobile-poster-farmhouse-hd.webp", width: 692, height: 1232, quality: 80 });
   const { props: { srcSet: desktopSet, ...desktopImg } } = getImageProps({ ...common, src: frameSrc(0), width: 1152, height: 648, quality: 80 });
-  const { props: { srcSet: reducedSet } } = getImageProps({ ...common, src: site.hero.poster.src, width: 1152, height: 648, quality: 80 });
+  const { props: { srcSet: reducedSet } } = getImageProps({ ...common, src: site.hero.poster.src, width: 1920, height: 1080, quality: 80 });
 
   /* ---------------------------------------------------- image sequence */
   useEffect(() => {
@@ -48,6 +55,7 @@ export function Hero() {
     const imgs: (HTMLImageElement | null)[] = new Array(frames).fill(null);
     let current = 0;
     let cancelled = false;
+    const base = pickFramePath(canvas);
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -83,7 +91,7 @@ export function Hero() {
           resolve();
         };
         im.onerror = () => resolve();
-        im.src = frameSrc(i);
+        im.src = frameSrc(i, base);
       });
 
     (async () => {

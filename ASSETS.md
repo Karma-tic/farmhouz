@@ -1,6 +1,6 @@
 # Assets — what to shoot and where it goes
 
-The hero flight (`hero-flight-hd/`, `hero-poster-farmhouse-hd.webp`, `hero-mobile-farmhouse-hd.mp4`, `hero-mobile-poster-farmhouse-hd.webp`) is now a generated drone video of an illustrative farmhouse. Every other file below is still a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
+The hero flight (`hero-flight-hd/`, `hero-poster-farmhouse-fhd.webp`, `hero-mobile-farmhouse-hd.mp4`, `hero-mobile-poster-farmhouse-hd.webp`) is now a generated drone video of an illustrative farmhouse. Every other file below is still a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
 
 Photography direction: warm grade, real moments — feet in the pool, chai on the porch, string lights at dusk, marigolds at a haldi. Natural light; avoid heavy filters and HDR.
 
@@ -9,7 +9,7 @@ Photography direction: warm grade, real moments — feet in the pool, chai on th
 | File | Spec |
 |---|---|
 | `hero-flight-hd/0001.webp … hero-flight-hd/0120.webp` | 120 frames, 1920×1080, WebP, ~60–90 KB each (≤ 8 MB total). Frames are lazy-loaded in batches. |
-| `hero-poster-farmhouse-hd.webp` | 1920×1080, the **final** frame (landed on the lawn). Used for reduced motion. |
+| `hero-poster-farmhouse-fhd.webp` | 1920×1080, the **final** frame (landed on the lawn). Used for reduced motion. |
 
 **The shot:** a 6–8 second drone flight — high over the fields, gliding forward through the gate, and gently touching down on the lawn facing the house. Keep it steady and slow (no fast pans). If you can, shoot so the top of the first frames shows sky: the page's dawn sky will show through if you mask it to transparent (optional).
 
