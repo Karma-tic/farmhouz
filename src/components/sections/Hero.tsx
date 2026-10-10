@@ -33,9 +33,9 @@ export function Hero() {
 
   // Art-directed LCP image: first drone frame on desktop, vertical poster on mobile
   const common = { alt: site.hero.poster.alt, sizes: "100vw", fetchPriority: "high", loading: "eager" } as const;
-  const { props: mobileImg } = getImageProps({ ...common, src: "/media/hero-mobile-poster.webp", width: 720, height: 1280, quality: 70 });
-  const { props: { srcSet: desktopSet, ...desktopImg } } = getImageProps({ ...common, src: frameSrc(0), width: 1920, height: 1080, quality: 70 });
-  const { props: { srcSet: reducedSet } } = getImageProps({ ...common, src: site.hero.poster.src, width: 1920, height: 1080, quality: 70 });
+  const { props: mobileImg } = getImageProps({ ...common, src: "/media/hero-mobile-poster-farmhouse.webp", width: 720, height: 1280, quality: 70 });
+  const { props: { srcSet: desktopSet, ...desktopImg } } = getImageProps({ ...common, src: frameSrc(0), width: 1120, height: 630, quality: 70 });
+  const { props: { srcSet: reducedSet } } = getImageProps({ ...common, src: site.hero.poster.src, width: 1280, height: 720, quality: 70 });
 
   /* ---------------------------------------------------- image sequence */
   useEffect(() => {
@@ -137,7 +137,8 @@ export function Hero() {
     if (!v || !matchMedia(mq.mobile).matches) return;
     // start after the page has settled so the poster stays the LCP and the main thread is free
     const start = () => {
-      v.src = site.hero.mobileVideo;
+      // WebM (VP9) where supported, H.264 MP4 everywhere else (iOS Safari)
+      v.src = v.canPlayType('video/webm; codecs="vp9"') ? site.hero.mobileVideo.replace(/\.mp4$/, ".webm") : site.hero.mobileVideo;
       v.load();
       v.play().catch(() => {});
     };

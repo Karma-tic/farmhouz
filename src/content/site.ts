@@ -30,9 +30,9 @@ export const site = {
 
   hero: {
     headline: ["Your own farm,", "for a day", "or a weekend."],
-    sequence: { frames: 120, path: `${P}/hero-seq` },
-    poster: { src: `${P}/hero-poster.webp`, alt: "Aerial view of a farmhouse: green fields, a gate and the lawn in front of the house", placeholder: true },
-    mobileVideo: `${P}/hero-mobile.mp4`,
+    sequence: { frames: 120, path: `${P}/hero-flight` },
+    poster: { src: `${P}/hero-poster-farmhouse.webp`, alt: "A whitewashed farmhouse with a terracotta roof and verandah, seen from the lawn after flying in over wheat fields and through the gate at sunrise" },
+    mobileVideo: `${P}/hero-mobile-farmhouse.mp4`,
   },
 
   contact: {

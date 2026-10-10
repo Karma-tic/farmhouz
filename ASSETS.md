@@ -1,6 +1,6 @@
 # Assets — what to shoot and where it goes
 
-Every file below currently exists as a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
+The hero flight (`hero-flight/`, `hero-poster-farmhouse.webp`, `hero-mobile-farmhouse.mp4`, `hero-mobile-poster-farmhouse.webp`) is now a generated drone video of an illustrative farmhouse. Every other file below is still a **generated placeholder** (flat illustrations tagged "TODO-replace"). Replace each one with a real file of the **same name and format** in `public/media/` — no code changes needed. Alt text for each image is in `src/content/site.ts`; update it if the photo shows something different.
 
 Photography direction: warm grade, real moments — feet in the pool, chai on the porch, string lights at dusk, marigolds at a haldi. Natural light; avoid heavy filters and HDR.
 
@@ -8,14 +8,14 @@ Photography direction: warm grade, real moments — feet in the pool, chai on th
 
 | File | Spec |
 |---|---|
-| `hero-seq/0001.webp … hero-seq/0120.webp` | 120 frames, 1920×1080, WebP, ~60–90 KB each (≤ 8 MB total). Frames are lazy-loaded in batches. |
-| `hero-poster.webp` | 1920×1080, the **final** frame (landed on the lawn). Used for reduced motion. |
+| `hero-flight/0001.webp … hero-flight/0120.webp` | 120 frames, 1920×1080, WebP, ~60–90 KB each (≤ 8 MB total). Frames are lazy-loaded in batches. |
+| `hero-poster-farmhouse.webp` | 1920×1080, the **final** frame (landed on the lawn). Used for reduced motion. |
 
 **The shot:** a 6–8 second drone flight — high over the fields, gliding forward through the gate, and gently touching down on the lawn facing the house. Keep it steady and slow (no fast pans). If you can, shoot so the top of the first frames shows sky: the page's dawn sky will show through if you mask it to transparent (optional).
 
 ```bash
-# 120 frames at 15 fps from an 8s clip → public/media/hero-seq/0001.webp …
-ffmpeg -i drone.mp4 -vf "fps=15,scale=1920:-1" -q:v 75 public/media/hero-seq/%04d.webp
+# 120 frames at 15 fps from an 8s clip → public/media/hero-flight/0001.webp …
+ffmpeg -i drone.mp4 -vf "fps=15,scale=1920:-1" -q:v 75 public/media/hero-flight/%04d.webp
 ```
 
 If your clip is a different length, adjust `fps` so you end up with 120 frames, or change `hero.sequence.frames` in `site.ts`.
@@ -24,12 +24,12 @@ If your clip is a different length, adjust `fps` so you end up with 120 frames, 
 
 | File | Spec |
 |---|---|
-| `hero-mobile.mp4` | 1080×1920 vertical, 6–8 s, silent, loops, ≤ 2.5 MB, H.264 (optionally add an AV1 version) |
-| `hero-mobile-poster.webp` | 1080×1920, first frame of the loop — this is the mobile LCP image, keep it ≤ 120 KB |
+| `hero-mobile-farmhouse.mp4` | 1080×1920 vertical, 6–8 s, silent, loops, ≤ 2.5 MB, H.264 (optionally add an AV1 version) |
+| `hero-mobile-poster-farmhouse.webp` | 1080×1920, first frame of the loop — this is the mobile LCP image, keep it ≤ 120 KB |
 
 ```bash
-ffmpeg -i drone.mp4 -vf "scale=1080:-2" -c:v libx264 -crf 26 -an -movflags +faststart public/media/hero-mobile.mp4
-ffmpeg -i public/media/hero-mobile.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 70 public/media/hero-mobile-poster.webp
+ffmpeg -i drone.mp4 -vf "scale=1080:-2" -c:v libx264 -crf 26 -an -movflags +faststart public/media/hero-mobile-farmhouse.mp4
+ffmpeg -i public/media/hero-mobile-farmhouse.mp4 -frames:v 1 -vf "scale=720:-2" -q:v 70 public/media/hero-mobile-poster-farmhouse.webp
 ```
 
 ## 3. Spaces — 5 photos, 2400 px wide (3:2)
