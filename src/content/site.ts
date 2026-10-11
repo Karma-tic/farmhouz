@@ -21,7 +21,7 @@ export type Occasion = {
 export const site = {
   name: "Farmhouze",
   tagline: "Bhopal's best farmhouses, checked and booked for you.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://farmhouz.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://farmhouze.in",
   description:
     "Handpicked farmhouses around Bhopal for day outs, weekend stays, birthdays, haldi & mehendi, small weddings, shoots and offsites. Tell us your dates — we check with the owner and confirm within 2 hours.",
 

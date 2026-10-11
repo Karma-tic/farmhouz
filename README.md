@@ -30,7 +30,7 @@ A lapsed hold shows as **expired**; the guest can tap "Check again". Exact addre
    - `ADMIN_SECRET` — any long random string (signs your login cookie)
 3. **Payments.** `NEXT_PUBLIC_UPI_ID` (e.g. `yourname@okhdfcbank`) and `NEXT_PUBLIC_UPI_NAME` (the name guests see).
 4. **Emails (optional).** `RESEND_API_KEY`, `ADMIN_EMAIL` (where new requests go), `EMAIL_FROM` (a verified sender).
-5. **Domain.** `NEXT_PUBLIC_SITE_URL` once you have one (used in links, sitemap, Open Graph).
+5. **Domain.** The site lives at https://farmhouze.in (GoDaddy DNS → Vercel). Set `NEXT_PUBLIC_SITE_URL` only to override it.
 6. Redeploy. Open `/admin` and sign in.
 
 See `.env.example` for the full list.
