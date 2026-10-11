@@ -64,3 +64,8 @@ export async function notifyGuest(b: Booking, origin: string) {
   };
   await send(b.email, `${statusLabel[b.status]} · ${getFarmhouse(b.farmSlug)?.name} · ${displayCode(b.code)}`, `Hi ${b.name.split(/\s+/)[0]},\n\n${lines[b.status]}\n\n${summary(b)}\n\nYour booking page: ${link}\n\n— ${site.name}`);
 }
+
+/** Short heads-up to the admin inbox (owner applications, waitlist sign-ups). */
+export async function notifyAdminNote(subject: string, text: string) {
+  await send(adminEmail(), subject, text);
+}

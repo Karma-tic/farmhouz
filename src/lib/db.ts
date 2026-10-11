@@ -96,6 +96,18 @@ create table if not exists owner_leads (
   notes       text,
   status      text not null default 'new'
 );
+
+create table if not exists waitlist (
+  id          uuid primary key default gen_random_uuid(),
+  created_at  timestamptz not null default now(),
+  name        text not null,
+  phone       text not null,
+  occasion    text,
+  when_text   text,
+  guests      int,
+  notes       text,
+  status      text not null default 'new'
+);
 `;
 
 /** Returns the SQL client, creating tables on the first call of each server instance. */

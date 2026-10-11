@@ -8,6 +8,7 @@ import { project } from "@/components/farm/AreaMap";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { getArea, getCity } from "@/content/cities";
 import { farmhousesIn } from "@/content/farmhouses";
+import { site } from "@/content/site";
 import type { Area, Farmhouse } from "@/content/types";
 
 /** A gently curved road from the city to an area, in the map's 700×460 frame */
@@ -102,6 +103,15 @@ export function Location({ farm }: { farm?: Farmhouse }) {
               ) : (
                 city.areas.map((a) => {
                   const n = farms.filter((f) => f.area === a.slug).length;
+                  if (!site.launched)
+                    return (
+                      <li key={a.slug} className="flex min-h-12 items-center justify-between gap-4 py-3">
+                        <span>{a.name}</span>
+                        <span className="eyebrow text-night-muted">
+                          {a.kmFromCentre} km · {a.driveTime}
+                        </span>
+                      </li>
+                    );
                   return (
                     <li key={a.slug}>
                       <Link href={`/bhopal?area=${a.slug}`} className="group flex min-h-12 items-center justify-between gap-4 py-3">

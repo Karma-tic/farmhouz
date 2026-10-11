@@ -1,5 +1,6 @@
 import { after } from "next/server";
 import { getFarmhouse } from "@/content/farmhouses";
+import { site } from "@/content/site";
 import { bad, handle, originOf, readJson } from "@/lib/api";
 import { occupiedDays, todayIST } from "@/lib/booking/dates";
 import { blockedDays, createBooking } from "@/lib/booking/repo";
@@ -13,6 +14,7 @@ export async function POST(req: Request) {
     if (!parsed.success) return bad("Please check the highlighted fields.", 422, { errors: parsed.error.flatten().fieldErrors });
     const data = parsed.data;
     if (data.company) return Response.json({ ok: true, code: null }); // honeypot
+    if (!site.launched) return bad("Bookings open soon — join the early-access list on the homepage, or WhatsApp us.", 403);
     const farm = getFarmhouse(data.farmSlug);
     if (!farm) return bad("That farmhouse isn't available for booking.", 404);
     if (data.from < todayIST()) return bad("Please pick a date from today onwards.", 422, { errors: { from: ["Pick a future date"] } });

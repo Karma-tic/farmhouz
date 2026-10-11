@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { site } from "@/content/site";
+import { navItems, site } from "@/content/site";
 import { Button } from "@/components/ui/button";
 import { usePhase } from "@/lib/motion/useDaylight";
 import { cn } from "@/lib/utils";
@@ -40,7 +40,7 @@ export function Header() {
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-7">
-            {site.nav.map((l) => (
+            {navItems().map((l) => (
               <li key={l.label}>
                 <Link
                   href={l.href}
@@ -60,7 +60,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Button asChild size="sm" className="px-5">
             <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
-              Book
+              {site.launched ? "Book" : "Early access"}
             </Link>
           </Button>
           <MobileMenu />

@@ -79,7 +79,7 @@ export function Numbers() {
           <p className="eyebrow text-muted">Escape in numbers · 07:30 AM</p>
         </Reveal>
         <div ref={ref} className="grid grid-cols-2 gap-x-6 gap-y-12 border-t border-line pt-10 lg:grid-cols-4">
-          {site.numbers.map((n) => (
+          {(site.launched ? site.numbers : site.prelaunch.numbers).map((n) => (
             <div key={n.label} className="flex flex-col gap-3">
               <BlurNumber value={n.value} suffix={n.suffix} go={go} />
               <p className="max-w-[22ch] text-muted">{n.label}</p>

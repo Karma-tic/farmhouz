@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { handleHashLink } from "@/components/chrome/scrollLink";
 import { farmhousesIn, fromPrice, getFarmhouse } from "@/content/farmhouses";
-import { formatPrice } from "@/content/site";
+import { formatPrice, site } from "@/content/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -45,7 +45,9 @@ export function MobileBookingBar() {
   const inner = (
     <>
       <span className="text-sm">
-        {farm ? (
+        {!site.launched ? (
+          <>Launching soon in Bhopal</>
+        ) : farm ? (
           <>
             From <span className="font-mono font-medium tracking-wide">{formatPrice(price?.amount)}</span> / {price?.unit}
           </>
@@ -56,7 +58,7 @@ export function MobileBookingBar() {
         )}
       </span>
       <span className="inline-flex items-center gap-1.5 rounded-full bg-wheat px-4 py-2 text-sm font-medium text-on-wheat">
-        {farm ? "Request to book" : "Check dates"} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
+        {!site.launched ? "Early access" : farm ? "Request to book" : "Check dates"} <ArrowRight className="size-4" strokeWidth={1.5} aria-hidden="true" />
       </span>
     </>
   );

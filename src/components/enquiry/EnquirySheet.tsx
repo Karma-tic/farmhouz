@@ -13,6 +13,11 @@ import { site } from "@/content/site";
 import type { Package } from "@/content/types";
 import { useEnquiry } from "./EnquiryContext";
 
+const WaitlistForm = dynamic(() => import("./WaitlistForm").then((m) => m.WaitlistForm), {
+  ssr: false,
+  loading: () => <div className="min-h-[360px]" aria-busy="true" />,
+});
+
 const EnquiryForm = dynamic(() => import("./EnquiryForm").then((m) => m.EnquiryForm), {
   ssr: false,
   loading: () => <div className="min-h-[560px]" aria-busy="true" />,
@@ -53,8 +58,8 @@ export function EnquirySheet() {
                   </motion.div>
                   <div aria-hidden="true" className="scrim-bottom absolute inset-0" />
                   <div className="theme-night absolute inset-x-0 bottom-0 p-6">
-                    <p className="eyebrow mb-2 text-moon/90">{farm ? `${farm.name}${pkg ? ` · ${pkg.timing}` : ""}` : "Request to book"}</p>
-                    <Dialog.Title className="display text-[2.4rem] leading-none text-moon">{prefill.occasion ?? pkg?.name ?? (farm ? "Request to book" : "Find your farmhouse")}</Dialog.Title>
+                    <p className="eyebrow mb-2 text-moon/90">{!site.launched ? "Launching soon in Bhopal" : farm ? `${farm.name}${pkg ? ` · ${pkg.timing}` : ""}` : "Request to book"}</p>
+                    <Dialog.Title className="display text-[2.4rem] leading-none text-moon">{!site.launched ? "Get early access" : (prefill.occasion ?? pkg?.name ?? (farm ? "Request to book" : "Find your farmhouse"))}</Dialog.Title>
                   </div>
                   <Dialog.Close asChild>
                     <Button variant="ghost" size="icon" aria-label="Close" className="absolute right-3 top-3 bg-cream/85 text-ink backdrop-blur hover:bg-cream">
@@ -63,7 +68,11 @@ export function EnquirySheet() {
                   </Dialog.Close>
                 </div>
                 <div className="p-6 pb-8">
-                  <EnquiryForm farmSlug={prefill.farmSlug} defaultPackage={prefill.packageId} defaultOccasion={prefill.occasion} compact />
+                  {site.launched ? (
+                    <EnquiryForm farmSlug={prefill.farmSlug} defaultPackage={prefill.packageId} defaultOccasion={prefill.occasion} compact />
+                  ) : (
+                    <WaitlistForm defaultOccasion={prefill.occasion ?? pkg?.name} compact />
+                  )}
                 </div>
               </motion.div>
             </Dialog.Content>

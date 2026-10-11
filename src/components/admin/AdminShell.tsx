@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Inbox, LogOut, Sprout } from "lucide-react";
+import { CalendarDays, Inbox, LogOut, Sprout, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin", label: "Bookings", icon: Inbox },
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/leads", label: "Owner leads", icon: Sprout },
+  { href: "/admin/waitlist", label: "Waitlist", icon: Users },
 ];
 
 export function LoginCard({ onDone }: { onDone: () => void }) {

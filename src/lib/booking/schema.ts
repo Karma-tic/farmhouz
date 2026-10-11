@@ -85,3 +85,14 @@ export const leadSchema = z.object({
   company: z.string().max(0).optional().or(z.literal("")),
 });
 export type LeadInput = z.input<typeof leadSchema>;
+
+export const waitlistSchema = z.object({
+  name: z.string().trim().min(2, "Your name, please").max(80),
+  phone: z.string().trim().regex(INDIAN_PHONE, "Enter a 10-digit mobile number"),
+  occasion: optionalText(40),
+  when: optionalText(80),
+  guests: z.number().int().min(1).max(2000).optional(),
+  notes: optionalText(600),
+  company: z.string().max(0).optional().or(z.literal("")),
+});
+export type WaitlistInput = z.input<typeof waitlistSchema>;

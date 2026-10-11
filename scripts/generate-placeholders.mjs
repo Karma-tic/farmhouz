@@ -5,7 +5,7 @@
  *   node scripts/generate-placeholders.mjs --photos   # photos only
  *
  * Every file written here is a stand-in. Replace it with a real photo/video of the
- * same file name (see ASSETS.md). Photos carry a small "TODO-replace" tag.
+ * same file name (see ASSETS.md).
  */
 import sharp from "sharp";
 import { mkdir, rm } from "node:fs/promises";
@@ -21,12 +21,6 @@ const only = (k) => args.size === 0 || args.has(`--${k}`);
 let seed = 7;
 const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
 const R = (a, b) => a + rand() * (b - a);
-
-const tag = (w, h) =>
-  `<g font-family="monospace" font-size="${Math.round(w / 70)}" letter-spacing="2">
-     <rect x="${w - w / 4.6}" y="${h - h / 13}" width="${w / 5}" height="${h / 22}" rx="${h / 44}" fill="#14130F" opacity=".55"/>
-     <text x="${w - w / 4.6 + w / 10}" y="${h - h / 13 + h / 32}" text-anchor="middle" fill="#EDE6D6">TODO-replace</text>
-   </g>`;
 
 const grainDefs = `<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .22 0"/></filter>`;
 
@@ -203,7 +197,7 @@ async function photo(scene, file, W, H, s = 1) {
   seed = s;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
     <defs>${grainDefs}</defs>${scenes[scene](W, H)}
-    <rect width="${W}" height="${H}" filter="url(#grain)" opacity=".5"/>${tag(W, H)}</svg>`;
+    <rect width="${W}" height="${H}" filter="url(#grain)" opacity=".5"/></svg>`;
   await mkdir(path.dirname(file), { recursive: true });
   const img = sharp(Buffer.from(svg));
   if (file.endsWith(".jpg")) await img.jpeg({ quality: 82 }).toFile(file);
@@ -228,7 +222,6 @@ async function photos() {
     const [w, h] = ratioSize(r);
     await photo(sc, `${MEDIA}/gallery/${String(i + 1).padStart(2, "0")}.webp`, w, h, i * 11 + 3);
   }
-  await photo("porch", `${MEDIA}/og.jpg`, 1200, 630, 99);
   console.log("photos ✓");
 }
 

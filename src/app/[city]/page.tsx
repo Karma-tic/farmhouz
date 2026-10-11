@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Footer } from "@/components/sections/Footer";
 import { Explorer } from "@/components/search/Explorer";
@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: PageProps<"/[city]">): Promis
 export default async function CityPage({ params }: PageProps<"/[city]">) {
   const c = getCity((await params).city);
   if (!c) notFound();
+  if (!site.launched) redirect("/#book");
   return (
     <>
       <main id="main" className="pt-[calc(var(--header-h)+2.5rem)]" data-daylight="0.3">

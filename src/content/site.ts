@@ -28,6 +28,29 @@ export const site = {
   /** Shows a "Preview · sample listings" note while listings are still samples */
   previewMode: true,
 
+  /**
+   * false = pre-launch: sample farmhouses are hidden, "book" buttons collect a
+   * guest waitlist instead, and the farmhouse pages redirect home.
+   * Turn on (NEXT_PUBLIC_LAUNCHED=true in Vercel, or here) once real farmhouses are listed.
+   */
+  launched: process.env.NEXT_PUBLIC_LAUNCHED === "true",
+
+  prelaunch: {
+    heroLine: "Bhopal · launching soon · every farmhouse visited before it's listed",
+    numbers: [
+      { value: 6, suffix: "", label: "areas, from Kerwa to Raisen Road" },
+      { value: 100, suffix: "%", label: "of farmhouses visited before they're listed" },
+      { value: 2, suffix: " hrs", label: "to hear back on availability" },
+      { value: 0, suffix: "", label: "booking fees for you" },
+    ],
+    owners: [
+      { id: "apply", name: "Tell us about it", description: "Fill a two-minute form or WhatsApp us a few photos and the location. Listing is free.", chips: ["2 minutes", "Free to list"], image: { src: `${P}/spaces/lawn.webp`, alt: "Wide green lawn in front of a farmhouse" } },
+      { id: "visit", name: "We visit and set it up", description: "We see it in person, agree prices and rules with you, and build its page — with a name and identity if it doesn't have one yet.", chips: ["We visit", "Its own page"], image: { src: `${P}/spaces/orchard.webp`, alt: "Mango orchard rows at golden hour" } },
+      { id: "enquiries", name: "We handle every enquiry", description: "Calls, WhatsApps, questions, payments — we deal with guests. You only get a message when dates are booked.", chips: ["No calls for you", "Advance collected"], image: { src: `${P}/spaces/pool.webp`, alt: "Private pool by the farmhouse" } },
+      { id: "host", name: "You host and get paid", description: "Guests arrive with a booking pass and the balance. Need dates for yourself? Tell us and we block them.", chips: ["Your calendar", "Your rules"], image: { src: `${P}/spaces/bonfire.webp`, alt: "Bonfire on the lawn at night" } },
+    ],
+  },
+
   hero: {
     headline: ["Your own farm,", "for a day", "or a weekend."],
     sequence: { frames: 120, path: `${P}/hero-flight-hd`, hdPath: `${P}/hero-flight-fhd` },
@@ -246,6 +269,7 @@ export const site = {
 
   navPhotos: {
     Farmhouses: `${P}/packages/day-out.webp`,
+    "For owners": `${P}/spaces/lawn.webp`,
     Packages: `${P}/spaces/lawn.webp`,
     Celebrations: `${P}/celebrations/haldi.webp`,
     Gallery: `${P}/gallery/12.webp`,
@@ -257,6 +281,11 @@ export const site = {
 };
 
 export type Site = typeof site;
+
+/** Main navigation; before launch the farmhouse walk-through becomes the owners' pitch. */
+export function navItems() {
+  return site.launched ? site.nav : site.nav.map((n) => (n.href === "/#farmhouses" ? { label: "For owners", href: n.href } : n));
+}
 
 export function formatPrice(p: number | null | undefined) {
   return p == null ? "₹—" : `₹${p.toLocaleString("en-IN")}`;

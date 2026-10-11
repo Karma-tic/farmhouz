@@ -4,7 +4,7 @@ import { farmhousesIn, getFarmhouse } from "@/content/farmhouses";
 import { ownerFor } from "@/content/owners.server";
 import { db } from "@/lib/db";
 import { freeWindows, occupiedDays, todayIST } from "./dates";
-import type { LeadInput, RequestData } from "./schema";
+import type { LeadInput, RequestData, WaitlistInput } from "./schema";
 import type { Booking, BookingEvent, BookingStatus, DateRange, PublicBooking } from "./types";
 
 /* ------------------------------------------------------------------ helpers */
@@ -265,4 +265,32 @@ export async function listLeads() {
 export async function setLeadStatus(id: string, status: string) {
   const sql = await db();
   await sql`update owner_leads set status = ${status} where id = ${id}`;
+}
+
+/* --------------------------------------------------------- guest waitlist */
+export async function createWaitlist(w: WaitlistInput) {
+  const sql = await db();
+  await sql`insert into waitlist (name, phone, occasion, when_text, guests, notes)
+            values (${w.name}, ${w.phone}, ${w.occasion || null}, ${w.when || null}, ${w.guests ?? null}, ${w.notes || null})`;
+}
+
+export async function listWaitlist() {
+  const sql = await db();
+  const rows = await sql`select * from waitlist order by created_at desc limit 500`;
+  return rows.map((r) => ({
+    id: String(r.id),
+    createdAt: iso(r.created_at) as string,
+    name: String(r.name),
+    phone: String(r.phone),
+    occasion: (r.occasion as string) ?? null,
+    when: (r.when_text as string) ?? null,
+    guests: r.guests == null ? null : Number(r.guests),
+    notes: (r.notes as string) ?? null,
+    status: String(r.status),
+  }));
+}
+
+export async function setWaitlistStatus(id: string, status: string) {
+  const sql = await db();
+  await sql`update waitlist set status = ${status} where id = ${id}`;
 }

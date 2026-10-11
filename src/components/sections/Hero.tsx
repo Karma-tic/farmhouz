@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, MessageCircle } from "lucide-react";
+import { MapPin, MessageCircle, Sprout } from "lucide-react";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -192,7 +192,7 @@ export function Hero() {
         <div className="container-x">
           <p style={{ "--i": 3 } as React.CSSProperties} className="hero-fade eyebrow mb-5 flex items-center gap-2 text-moon/90">
             <MapPin className="size-4" strokeWidth={1.5} aria-hidden="true" />
-            Bhopal · {published.length} handpicked farmhouses · availability checked for you
+            {site.launched ? `Bhopal · ${published.length} handpicked farmhouses · availability checked for you` : site.prelaunch.heroLine}
           </p>
           <h1 id="hero-title" className="display display-xl max-w-[14ch] text-moon">
             {site.hero.headline.map((l, i) => (
@@ -206,13 +206,19 @@ export function Hero() {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button asChild size="lg" className="hero-fade" style={{ "--i": 4 } as React.CSSProperties}>
               <Link ref={ctaRef} href="/#book" onClick={(e) => handleHashLink(e, "/#book")} data-cursor="Book">
-                Check availability
+                {site.launched ? "Check availability" : "Get early access"}
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="hero-fade text-moon" style={{ "--i": 5 } as React.CSSProperties}>
-              <a href={whatsappLink(defaultWhatsappText)} target="_blank" rel="noopener noreferrer">
-                <MessageCircle /> WhatsApp us
-              </a>
+              {site.launched ? (
+                <a href={whatsappLink(defaultWhatsappText)} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle /> WhatsApp us
+                </a>
+              ) : (
+                <Link href="/list-your-farmhouse">
+                  <Sprout /> List your farmhouse
+                </Link>
+              )}
             </Button>
           </div>
         </div>

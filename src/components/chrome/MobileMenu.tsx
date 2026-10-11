@@ -6,14 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Dialog } from "radix-ui";
 import { useState } from "react";
-import { defaultWhatsappText, site, whatsappLink } from "@/content/site";
+import { defaultWhatsappText, navItems, site, whatsappLink } from "@/content/site";
 import { Button } from "@/components/ui/button";
 import { handleHashLink } from "./scrollLink";
 
 /** Full-screen sheet with big Fraunces links and a photo that crossfades per link. */
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(site.nav[0].label);
+  const [active, setActive] = useState(navItems()[0].label);
   const photo = site.navPhotos[active] ?? site.occasions[0].image.src;
 
   return (
@@ -62,7 +62,7 @@ export function MobileMenu() {
 
                   <nav aria-label="Mobile">
                     <ul className="flex flex-col">
-                      {site.nav.map((l, i) => (
+                      {navItems().map((l, i) => (
                         <motion.li
                           key={l.label}
                           initial={{ opacity: 0, y: 24 }}
@@ -87,7 +87,7 @@ export function MobileMenu() {
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <Button asChild size="lg" className="flex-1">
                       <Link href="/#book" onClick={(e) => handleHashLink(e, "/#book", () => setOpen(false))}>
-                        Check availability
+                        {site.launched ? "Check availability" : "Get early access"}
                       </Link>
                     </Button>
                     <Button asChild size="lg" variant="outline" className="flex-1">

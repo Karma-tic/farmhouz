@@ -21,6 +21,12 @@ Built with Next.js 16 (App Router, Cache Components), React 19, Tailwind CSS 4, 
 
 A lapsed hold shows as **expired**; the guest can tap "Check again". Exact addresses and owner numbers never reach the browser until a booking is confirmed (they live in `src/content/owners.server.ts`).
 
+## Pre-launch mode (now)
+
+Until real farmhouses are listed, the site runs in **pre-launch mode**: sample farmhouses are hidden, the homepage walk-through pitches to farmhouse owners, and every "book" button collects a **guest waitlist** instead (see `/admin/waitlist`). Owner applications land in `/admin/leads`.
+
+**To launch:** list real farmhouses, then set `NEXT_PUBLIC_LAUNCHED=true` in Vercel → Settings → Environment Variables and redeploy.
+
 ## Setup (one time)
 
 1. **Database (required for bookings).** In Vercel → your project → **Storage** → create a **Neon** Postgres database and connect it to the project. That adds `DATABASE_URL` automatically. Tables are created on first use.

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { FarmGallery } from "@/components/farm/FarmGallery";
 import { FarmHero } from "@/components/farm/FarmHero";
 import { FarmOverview } from "@/components/farm/FarmOverview";
@@ -12,6 +12,7 @@ import { Packages } from "@/components/sections/Packages";
 import { Spaces } from "@/components/sections/Spaces";
 import { getArea, getCity } from "@/content/cities";
 import { getFarmhouse, published } from "@/content/farmhouses";
+import { site } from "@/content/site";
 import { farmJsonLd, JsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -35,6 +36,7 @@ export default async function FarmPage({ params }: PageProps<"/[city]/[slug]">) 
   const { city, slug } = await params;
   const farm = getFarmhouse(slug);
   if (!farm || farm.city !== city) notFound();
+  if (!site.launched) redirect("/#book");
   return (
     <>
       <main id="main">
