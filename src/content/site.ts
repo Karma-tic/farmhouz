@@ -59,12 +59,12 @@ export const site = {
   },
 
   contact: {
-    /** Digits only with country code, no + or spaces. OWNER TO FILL */
-    whatsapp: "919999999999",
-    phone: "+91 99999 99999", // OWNER TO FILL
-    email: "hello@farmhouze.in", // OWNER TO FILL
-    instagram: "https://instagram.com/farmhouze", // OWNER TO FILL
-    instagramHandle: "@farmhouze", // OWNER TO FILL
+    /** Digits only with country code, no + or spaces */
+    whatsapp: "916261486462",
+    phone: "+91 62614 86462",
+    email: "contact@karmatix.in",
+    instagram: "https://instagram.com/karmatix.in",
+    instagramHandle: "@karmatix.in",
     hours: "9 AM – 9 PM, every day",
   },
 
@@ -75,8 +75,8 @@ export const site = {
     advancePercent: 30,
     /** How long dates are held after we confirm availability */
     holdHours: 24,
-    /** Shown in the payment step. OWNER TO FILL */
-    upiId: process.env.NEXT_PUBLIC_UPI_ID ?? "farmhouze@upi",
+    /** Shown in the payment step (UPI QR + app link) */
+    upiId: process.env.NEXT_PUBLIC_UPI_ID ?? "8962364090@superyes",
     payeeName: process.env.NEXT_PUBLIC_UPI_NAME ?? "Farmhouze",
     bankNote: "Prefer bank transfer? WhatsApp us for account details.",
   },
