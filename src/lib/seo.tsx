@@ -32,7 +32,7 @@ export function farmJsonLd(f: Farmhouse) {
     name: f.name,
     description: f.description,
     url: `${site.url}/${f.city}/${f.slug}`,
-    image: [f.cover, ...f.gallery].map((m) => `${site.url}${m.src}`),
+    image: [f.cover, ...f.gallery].map((m) => (m.src.startsWith("http") ? m.src : `${site.url}${m.src}`)),
     address: { "@type": "PostalAddress", addressLocality: `${area?.name ?? ""}, ${city?.name ?? ""}`, addressRegion: city?.state, addressCountry: "IN" },
     geo: { "@type": "GeoCoordinates", latitude: f.approx.lat, longitude: f.approx.lng },
     numberOfRooms: f.capacity.bedrooms,
@@ -50,5 +50,13 @@ export function faqJsonLd(faqs: Faq[] = site.faqs) {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  };
+}
+
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, item: `${site.url}${it.path}` })),
   };
 }

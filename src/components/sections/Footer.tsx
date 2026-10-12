@@ -75,7 +75,10 @@ export function Footer() {
               <h2 className="eyebrow mb-4 text-wheat">Explore</h2>
               <ul className="flex flex-col gap-2">
                 {[
-                  { href: "/bhopal", label: "Farmhouses in Bhopal" },
+                  { href: "/farmhouse-in-bhopal", label: "Farmhouses in Bhopal" },
+                  { href: "/farmhouse-in-bhopal/birthday-party", label: "Birthday party farmhouses" },
+                  { href: "/farmhouse-in-bhopal/day-out", label: "One-day picnic farmhouses" },
+                  { href: "/farmhouse-in-bhopal/pre-wedding-shoot", label: "Pre-wedding shoot locations" },
                   { href: "/#how", label: "How booking works" },
                   { href: "/list-your-farmhouse", label: "List your farmhouse" },
                   { href: "/policies", label: "Booking terms & cancellations" },
