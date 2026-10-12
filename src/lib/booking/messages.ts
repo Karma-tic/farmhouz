@@ -1,4 +1,3 @@
-import { getFarmhouse } from "@/content/farmhouses";
 import { formatPrice, site } from "@/content/site";
 import { prettyRange } from "./dates";
 import type { Booking, BookingStatus } from "./types";
@@ -17,13 +16,11 @@ export const statusLabel: Record<BookingStatus, string> = {
 export const displayCode = (code: string) => `FZ-${code.slice(0, 4)}-${code.slice(4)}`;
 export const trackingPath = (code: string) => `/booking/${code}`;
 
-const farmName = (slug: string) => getFarmhouse(slug)?.name ?? slug;
-
 /** WhatsApp message to the guest for the booking's current status. */
-export function guestMessage(b: Booking, link: string) {
+export function guestMessage(b: Booking, link: string, farmName: string) {
   const first = b.name.split(/\s+/)[0];
   const when = prettyRange(b.checkIn, b.checkOut);
-  const head = `Hi ${first}, this is ${site.name} about ${farmName(b.farmSlug)} (${when}, ${b.guests} guests).`;
+  const head = `Hi ${first}, this is ${site.name} about ${farmName} (${when}, ${b.guests} guests).`;
   switch (b.status) {
     case "checking":
       return `${head}\n\nWe've got your request and we're checking with the owner now. You can follow it here: ${link}`;
@@ -43,9 +40,9 @@ export function guestMessage(b: Booking, link: string) {
 }
 
 /** WhatsApp message to the owner asking about availability. */
-export function ownerAskMessage(b: Booking) {
+export function ownerAskMessage(b: Booking, farmName: string) {
   return [
-    `Namaste! ${site.name} here. Is ${farmName(b.farmSlug)} free on ${prettyRange(b.checkIn, b.checkOut, { weekday: true })}?`,
+    `Namaste! ${site.name} here. Is ${farmName} free on ${prettyRange(b.checkIn, b.checkOut, { weekday: true })}?`,
     `Guests: ${b.guests}${b.occasion ? ` · Occasion: ${b.occasion}` : ""}`,
     b.message ? `Guest's note: ${b.message}` : "",
     "Please confirm availability and your best price. Thank you!",
@@ -54,10 +51,10 @@ export function ownerAskMessage(b: Booking) {
     .join("\n");
 }
 
-export function ownerConfirmMessage(b: Booking) {
+export function ownerConfirmMessage(b: Booking, farmName: string) {
   return [
     `Booking confirmed via ${site.name} ✅`,
-    `${farmName(b.farmSlug)} · ${prettyRange(b.checkIn, b.checkOut, { weekday: true })}`,
+    `${farmName} · ${prettyRange(b.checkIn, b.checkOut, { weekday: true })}`,
     `Guest: ${b.name} · ${b.phone} · ${b.guests} guests${b.occasion ? ` · ${b.occasion}` : ""}`,
     `Advance received: ${formatPrice(b.advance)} · Balance at check-in: ${formatPrice((b.quoteTotal ?? 0) - (b.advance ?? 0))}`,
     "Please block these dates. Thank you!",

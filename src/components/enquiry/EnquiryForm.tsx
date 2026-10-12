@@ -9,9 +9,10 @@ import { useEffect, useId, useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { farmhousesIn, getFarmhouse, packagesFor } from "@/content/farmhouses";
+import { packagesFor } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice, site, whatsappLink } from "@/content/site";
-import type { PackageId } from "@/content/types";
+import type { Farmhouse, Package, PackageId } from "@/content/types";
 import { nightsBetween } from "@/lib/booking/dates";
 import { requestSchema, type RequestData, type RequestInput } from "@/lib/booking/schema";
 import { cn } from "@/lib/utils";
@@ -43,8 +44,7 @@ export function Field({ label, hint, error, id, children, className }: { label: 
 
 const prettyDate = (s?: string) => (s ? format(fromIso(s) as Date, "EEE, d MMM") : "");
 
-function estimate(farmSlug: string | undefined, packageId: string | undefined, from?: string, to?: string) {
-  const farm = farmSlug ? getFarmhouse(farmSlug) : undefined;
+function estimate(farm: Farmhouse | undefined, packageId: string | undefined, from?: string, to?: string) {
   if (!farm) return { line: "", price: "₹—" };
   const pkg = packagesFor(farm).find((p) => p.id === packageId);
   const nights = nightsBetween(from, to || undefined);
@@ -54,8 +54,7 @@ function estimate(farmSlug: string | undefined, packageId: string | undefined, f
   return { line: parts.join(" · "), price: formatPrice(price) };
 }
 
-function whatsappText(v: Partial<RequestInput>) {
-  const farm = v.farmSlug ? getFarmhouse(v.farmSlug) : undefined;
+function whatsappText(v: Partial<RequestInput>, farm: Farmhouse | undefined) {
   return [`Hi ${site.name}! I'd like to book ${farm?.name ?? "a farmhouse"}.`, `Dates: ${v.from || "__"}${v.to ? ` to ${v.to}` : ""}`, `Guests: ${v.guests ?? "__"}`, v.occasion ? `Occasion: ${v.occasion}` : "", v.name ? `Name: ${v.name}` : ""]
     .filter(Boolean)
     .join("\n");
@@ -82,6 +81,7 @@ export function EnquiryForm({
   defaultOccasion?: string;
   compact?: boolean;
 }) {
+  const { get: getFarmhouse, inCity: farmhousesIn } = useFarms();
   const uid = useId();
   const id = (n: string) => `${uid}-${n}`;
   const router = useRouter();
@@ -138,7 +138,7 @@ export function EnquiryForm({
     if (pkgs.length && !pkgs.some((p) => p.id === values.packageId)) setValue("packageId", pkgs[0].id);
   }, [pkgs, values.packageId, setValue]);
 
-  const summary = estimate(values.farmSlug, values.packageId, values.from, values.to);
+  const summary = estimate(farm, values.packageId, values.from, values.to);
 
   const onSubmit = async (data: RequestData) => {
     setServerError(null);
@@ -219,7 +219,7 @@ export function EnquiryForm({
 
       <Field label="Planning" id={id("pkg")} error={errors.packageId?.message} className="col-span-2 sm:col-span-1">
         <select id={id("pkg")} className={cn(fieldBase, "appearance-none bg-[length:16px] bg-[right_1rem_center] bg-no-repeat pr-10")} style={{ backgroundImage: "var(--chevron)" }} {...register("packageId")}>
-          {(pkgs.length ? pkgs : packagesFor(farmhousesIn("bhopal")[0])).map((p) => (
+          {(pkgs.length ? pkgs : farmhousesIn("bhopal")[0] ? packagesFor(farmhousesIn("bhopal")[0]) : (site.packages as Package[])).map((p) => (
             <option key={p.id} value={p.id}>
               {p.name}
             </option>
@@ -294,7 +294,7 @@ export function EnquiryForm({
         <div role="alert" className="col-span-2 rounded-2xl border border-terra/40 bg-terra/5 p-4 text-sm">
           <p className="text-ink">{serverError.message}</p>
           {serverError.noDb && (
-            <a className="link-draw mt-2 inline-flex items-center gap-2 font-medium text-sage" href={whatsappLink(whatsappText(values))} target="_blank" rel="noopener noreferrer">
+            <a className="link-draw mt-2 inline-flex items-center gap-2 font-medium text-sage" href={whatsappLink(whatsappText(values, farm))} target="_blank" rel="noopener noreferrer">
               <MessageCircle className="size-4" strokeWidth={1.5} aria-hidden="true" /> Send this on WhatsApp instead
             </a>
           )}

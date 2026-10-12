@@ -20,7 +20,7 @@ export function LeadsAdmin() {
   return (
     <AdminShell needsLogin={needsLogin} onLogin={reload}>
       <h1 className="display display-md mb-2">Owner leads</h1>
-      <p className="mb-6 text-muted">Owners who applied through “List your farmhouse”. To list one, add it to src/content/farmhouses.ts (and their contacts to owners.server.ts).</p>
+      <p className="mb-6 text-muted">Owners who applied through “List your farmhouse”. Once you&apos;ve visited one, add it under Farmhouses.</p>
       {error && <p className="text-terra">{error}</p>}
       {!data ? (
         <p className="text-muted">Loading…</p>

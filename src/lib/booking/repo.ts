@@ -1,7 +1,6 @@
 import "server-only";
 import { randomInt } from "node:crypto";
-import { farmhousesIn, getFarmhouse } from "@/content/farmhouses";
-import { ownerFor } from "@/content/owners.server";
+import { farmsIn, getFarm, getOwner } from "@/lib/farms/server";
 import { db } from "@/lib/db";
 import { freeWindows, occupiedDays, todayIST } from "./dates";
 import type { LeadInput, RequestData, WaitlistInput } from "./schema";
@@ -148,7 +147,8 @@ export async function blockedDays(farmSlug: string): Promise<string[]> {
 
 export async function blockedByFarm(city = "bhopal"): Promise<Record<string, string[]>> {
   const sql = await db();
-  const slugs = farmhousesIn(city).map((f) => f.slug);
+  const slugs = (await farmsIn(city)).map((f) => f.slug);
+  if (!slugs.length) return {};
   const rows = await sql`select farm_slug, day from blocked_dates where farm_slug in ${sql(slugs)} and day >= ${todayIST()} order by day`;
   const out: Record<string, string[]> = Object.fromEntries(slugs.map((s) => [s, []]));
   for (const r of rows) out[String(r.farm_slug)].push(day(r.day) as string);
@@ -180,14 +180,14 @@ async function blockForBooking(b: Booking) {
 
 /** Automatic alternatives when a farmhouse isn't free: nearby dates here, and similar farmhouses free on the asked dates. */
 export async function suggestionsFor(b: Booking): Promise<{ dates: DateRange[]; farms: string[] }> {
-  const farm = getFarmhouse(b.farmSlug);
+  const farm = await getFarm(b.farmSlug);
   const byFarm = await blockedByFarm(farm?.city ?? "bhopal");
   const own = new Set(byFarm[b.farmSlug] ?? []);
   // the requested dates are taken even if the owner hasn't told us which days are blocked
   occupiedDays(b.checkIn, b.checkOut).forEach((d) => own.add(d));
   const autoDates = freeWindows(own, b.checkIn, b.checkOut, 3);
   const wanted = occupiedDays(b.checkIn, b.checkOut);
-  const autoFarms = farmhousesIn(farm?.city ?? "bhopal")
+  const autoFarms = (await farmsIn(farm?.city ?? "bhopal"))
     .filter((f) => f.slug !== b.farmSlug && f.capacity.eventGuests >= b.guests && wanted.every((d) => !(byFarm[f.slug] ?? []).includes(d)))
     .sort((x, y) => Number(y.area === farm?.area) - Number(x.area === farm?.area))
     .slice(0, 3)
@@ -199,9 +199,9 @@ export async function suggestionsFor(b: Booking): Promise<{ dates: DateRange[]; 
 
 /** What the guest's tracking page is allowed to see. */
 export async function publicView(b: Booking): Promise<PublicBooking> {
-  const farm = getFarmhouse(b.farmSlug);
+  const farm = await getFarm(b.farmSlug);
   const events = await getEvents(b.id);
-  const o = ownerFor(b.farmSlug);
+  const o = await getOwner(b.farmSlug);
   const suggestions = b.status === "unavailable" || b.status === "expired" ? await suggestionsFor(b) : { dates: [], farms: [] };
   return {
     code: b.code,

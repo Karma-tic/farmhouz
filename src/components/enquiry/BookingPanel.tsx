@@ -5,7 +5,8 @@ import type { DateRange } from "react-day-picker";
 import { AvailabilityCalendar } from "@/components/enquiry/AvailabilityCalendar";
 import { EnquiryForm, fieldBase } from "@/components/enquiry/EnquiryForm";
 import { useBooked } from "@/components/enquiry/useBooked";
-import { farmhousesIn, fromPrice } from "@/content/farmhouses";
+import { fromPrice } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -14,8 +15,9 @@ import { cn } from "@/lib/utils";
  * on the homepage the guest picks one first and the calendar shows its booked dates.
  */
 export default function BookingPanel({ farmSlug }: { farmSlug?: string }) {
+  const { inCity: farmhousesIn } = useFarms();
   const farms = farmhousesIn("bhopal");
-  const [chosen, setChosen] = useState(farmSlug ?? farms[0].slug);
+  const [chosen, setChosen] = useState(farmSlug ?? farms[0]?.slug ?? "");
   const slug = farmSlug ?? chosen;
   const [range, setRange] = useState<DateRange | undefined>();
   const { dates } = useBooked(slug);

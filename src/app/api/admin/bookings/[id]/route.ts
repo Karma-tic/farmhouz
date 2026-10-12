@@ -1,6 +1,5 @@
 import { after } from "next/server";
-import { getFarmhouse } from "@/content/farmhouses";
-import { ownerFor } from "@/content/owners.server";
+import { getFarm, getFarms, getOwner } from "@/lib/farms/server";
 import { site } from "@/content/site";
 import { bad, handle, originOf, readJson } from "@/lib/api";
 import { isAdmin, unauthorized } from "@/lib/admin-auth";
@@ -14,7 +13,8 @@ import { notifyGuest } from "@/lib/notify";
 type Ctx = { params: Promise<{ id: string }> };
 
 async function detail(b: Booking, origin: string) {
-  const owner = ownerFor(b.farmSlug);
+  const owner = await getOwner(b.farmSlug);
+  const name = (await getFarm(b.farmSlug))?.name ?? b.farmSlug;
   const link = `${origin}/booking/${b.code}`;
   return {
     booking: b,
@@ -23,9 +23,9 @@ async function detail(b: Booking, origin: string) {
     suggestions: await suggestionsFor(b),
     links: {
       tracking: link,
-      waGuest: `https://wa.me/${waNumber(b.phone)}?text=${encodeURIComponent(guestMessage(b, link))}`,
-      waOwnerAsk: `https://wa.me/${owner.ownerWhatsapp}?text=${encodeURIComponent(ownerAskMessage(b))}`,
-      waOwnerConfirm: `https://wa.me/${owner.ownerWhatsapp}?text=${encodeURIComponent(ownerConfirmMessage(b))}`,
+      waGuest: `https://wa.me/${waNumber(b.phone)}?text=${encodeURIComponent(guestMessage(b, link, name))}`,
+      waOwnerAsk: `https://wa.me/${owner.ownerWhatsapp}?text=${encodeURIComponent(ownerAskMessage(b, name))}`,
+      waOwnerConfirm: `https://wa.me/${owner.ownerWhatsapp}?text=${encodeURIComponent(ownerConfirmMessage(b, name))}`,
     },
   };
 }
@@ -68,7 +68,8 @@ export async function POST(req: Request, { params }: Ctx) {
       }
       case "unavailable": {
         if (a.blockDates) await blockDays(b.farmSlug, occupiedDays(b.checkIn, b.checkOut), "owner said booked");
-        const farms = a.altFarms.filter((s) => getFarmhouse(s));
+        const live = new Set((await getFarms()).map((f) => f.slug));
+        const farms = a.altFarms.filter((s) => live.has(s));
         next = await updateBooking(b.id, { status: "unavailable", alt_dates: a.altDates, alt_farms: farms, guest_note: a.guestNote || null, hold_until: null }, { type: "marked_unavailable", actor: "admin", data: { altDates: a.altDates, altFarms: farms } });
         break;
       }

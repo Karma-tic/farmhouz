@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useEnquiry } from "@/components/enquiry/EnquiryContext";
 import { handleHashLink } from "@/components/chrome/scrollLink";
-import { farmhousesIn, fromPrice, getFarmhouse } from "@/content/farmhouses";
+import { fromPrice } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice, site } from "@/content/site";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +16,7 @@ import { cn } from "@/lib/utils";
  * scroll up. On a farmhouse page it opens "Request to book"; elsewhere it links to search.
  */
 export function MobileBookingBar() {
+  const { get: getFarmhouse, inCity: farmhousesIn } = useFarms();
   const [visible, setVisible] = useState(false);
   const path = usePathname();
   const { openEnquiry } = useEnquiry();

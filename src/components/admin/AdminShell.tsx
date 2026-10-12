@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Inbox, LogOut, Sprout, Users } from "lucide-react";
+import { CalendarDays, Home, Inbox, LogOut, Sprout, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useState } from "react";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin", label: "Bookings", icon: Inbox },
+  { href: "/admin/farms", label: "Farmhouses", icon: Home },
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/leads", label: "Owner leads", icon: Sprout },
   { href: "/admin/waitlist", label: "Waitlist", icon: Users },

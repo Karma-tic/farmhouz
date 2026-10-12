@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { liveCities } from "@/content/cities";
-import { published } from "@/content/farmhouses";
 import { site } from "@/content/site";
+import { getFarms } from "@/lib/farms/server";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const published = await getFarms();
   return [
     { url: site.url, changeFrequency: "weekly", priority: 1 },
     ...(site.launched ? liveCities : []).map((c) => ({ url: `${site.url}/${c.slug}`, changeFrequency: "daily" as const, priority: 0.9 })),

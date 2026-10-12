@@ -97,6 +97,16 @@ create table if not exists owner_leads (
   status      text not null default 'new'
 );
 
+create table if not exists farms (
+  slug        text primary key,
+  data        jsonb not null,
+  private     jsonb not null default '{}'::jsonb,
+  published   boolean not null default false,
+  sort        int not null default 0,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
 create table if not exists waitlist (
   id          uuid primary key default gen_random_uuid(),
   created_at  timestamptz not null default now(),

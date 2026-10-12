@@ -3,7 +3,7 @@
 import { CalendarPlus, Clock, MapPin, MessageCircle, Navigation, Phone, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getArea } from "@/content/cities";
-import { getFarmhouse } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice, site, whatsappLink } from "@/content/site";
 import { addDays, prettyRange } from "@/lib/booking/dates";
 import { displayCode } from "@/lib/booking/messages";
@@ -32,6 +32,7 @@ function icsFor(b: PublicBooking, farmName: string) {
 
 /** The "ticket" a guest gets once booked: exact address, caretaker, times, balance. */
 export function BookingPass({ booking }: { booking: PublicBooking }) {
+  const { get: getFarmhouse } = useFarms();
   const farm = getFarmhouse(booking.farmSlug);
   const area = farm ? getArea(farm.city, farm.area) : undefined;
   const p = booking.pass;

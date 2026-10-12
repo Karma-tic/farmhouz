@@ -35,7 +35,7 @@ Until real farmhouses are listed, the site runs in **pre-launch mode**: sample f
    - `ADMIN_PASSWORD` — your admin password (choose a long one)
    - `ADMIN_SECRET` — any long random string (signs your login cookie)
 3. **Payments.** `NEXT_PUBLIC_UPI_ID` (e.g. `yourname@okhdfcbank`) and `NEXT_PUBLIC_UPI_NAME` (the name guests see).
-4. **Emails (optional).** `RESEND_API_KEY`, `ADMIN_EMAIL` (where new requests go), `EMAIL_FROM` (a verified sender).
+4. **Emails.** Resend (free plan) sends from alerts@farmhouze.in (domain verified via DNS on GoDaddy). Set `RESEND_API_KEY` in Vercel. Alerts go to `site.contact.email` unless `ADMIN_EMAIL` is set.
 5. **Domain.** The site lives at https://farmhouze.in (GoDaddy DNS → Vercel). Set `NEXT_PUBLIC_SITE_URL` only to override it.
 6. Redeploy. Open `/admin` and sign in.
 

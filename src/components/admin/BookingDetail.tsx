@@ -6,8 +6,10 @@ import { useId, useState } from "react";
 import { useCountdown } from "@/components/booking/useCountdown";
 import { Field, fieldBase } from "@/components/enquiry/EnquiryForm";
 import { Button } from "@/components/ui/button";
-import { farmhousesIn, getFarmhouse, packagesFor } from "@/content/farmhouses";
-import type { OwnerInfo } from "@/content/owners.server";
+import { packagesFor } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
+import type { Farmhouse } from "@/content/types";
+import type { OwnerInfo } from "@/lib/farms/types";
 import { formatPrice, site } from "@/content/site";
 import { addDays, nightsBetween, prettyRange } from "@/lib/booking/dates";
 import { displayCode } from "@/lib/booking/messages";
@@ -28,8 +30,7 @@ type Detail = {
 
 const round100 = (n: number) => Math.round(n / 100) * 100;
 
-function estimateQuote(b: Booking) {
-  const farm = getFarmhouse(b.farmSlug);
+function estimateQuote(b: Booking, farm: Farmhouse | undefined) {
   if (!farm) return 0;
   const pkg = packagesFor(farm).find((p) => p.id === b.packageId);
   const nights = nightsBetween(b.checkIn, b.checkOut);
@@ -89,6 +90,7 @@ export function BookingDetail({ id }: { id: string }) {
 }
 
 function DetailBody({ d, busy, act, actErr }: { d: Detail; busy: string | null; act: (a: AdminAction, key: string) => void; actErr: string }) {
+  const { get: getFarmhouse } = useFarms();
   const b = d.booking;
   const farm = getFarmhouse(b.farmSlug);
   const [copied, setCopied] = useState(false);
@@ -306,8 +308,9 @@ function CheckingActions({ d, busy, act }: { d: Detail; busy: string | null; act
 }
 
 function AvailableForm({ d, busy, act }: { d: Detail; busy: string | null; act: (a: AdminAction, key: string) => void }) {
+  const { get: getFarmhouse } = useFarms();
   const uid = useId();
-  const est = estimateQuote(d.booking);
+  const est = estimateQuote(d.booking, getFarmhouse(d.booking.farmSlug));
   const [total, setTotal] = useState(String(d.booking.quoteTotal ?? (est || "")));
   const [advanceOverride, setAdvance] = useState<string | null>(d.booking.advance != null ? String(d.booking.advance) : null);
   const [hours, setHours] = useState(String(site.booking.holdHours));
@@ -355,6 +358,7 @@ function AvailableForm({ d, busy, act }: { d: Detail; busy: string | null; act: 
 }
 
 function UnavailableForm({ d, busy, act, label = "Tell the guest it's not available" }: { d: Detail; busy: string | null; act: (a: AdminAction, key: string) => void; label?: string }) {
+  const { get: getFarmhouse, inCity: farmhousesIn } = useFarms();
   const uid = useId();
   const b = d.booking;
   const [dates, setDates] = useState<DateRange[]>(d.suggestions.dates.slice(0, 3));

@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Suspense, ViewTransition } from "react";
@@ -12,6 +13,8 @@ import { DaylightProvider } from "@/components/providers/DaylightProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { LazyToaster as Toaster } from "@/components/ui/lazy-toaster";
 import { site } from "@/content/site";
+import { FarmsProvider } from "@/lib/farms/client";
+import { getFarms } from "@/lib/farms/server";
 import "./globals.css";
 
 /*
@@ -78,7 +81,8 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const farms = await getFarms();
   return (
     <html
       lang="en-IN"
@@ -97,6 +101,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </a>
         <DaylightProvider />
         <SmoothScroll />
+        <FarmsProvider farms={farms}>
         <EnquiryProvider>
           <Loader />
           <Header />
@@ -106,10 +111,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <MobileBookingBar />
           </Suspense>
         </EnquiryProvider>
+        </FarmsProvider>
         <SunClock />
         <Cursor />
         <Toaster />
         <div className="grain" aria-hidden="true" />
+        <Analytics />
       </body>
     </html>
   );

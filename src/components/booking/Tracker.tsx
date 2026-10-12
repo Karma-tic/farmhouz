@@ -8,7 +8,7 @@ import { use, useCallback, useEffect, useRef, useState } from "react";
 import { LeafConfetti } from "@/components/enquiry/LeafConfetti";
 import { Button } from "@/components/ui/button";
 import { getArea } from "@/content/cities";
-import { getFarmhouse } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { site, whatsappLink } from "@/content/site";
 import { prettyRange } from "@/lib/booking/dates";
 import { displayCode } from "@/lib/booking/messages";
@@ -100,6 +100,7 @@ const EVENT_LABEL: Record<string, string> = {
 };
 
 export function Tracker({ params }: { params: Promise<{ code: string }> }) {
+  const { get: getFarmhouse } = useFarms();
   const { code } = use(params);
   const search = useSearchParams();
   const fresh = search.get("new") === "1";

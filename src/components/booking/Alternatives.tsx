@@ -9,13 +9,15 @@ import { AvailabilityCalendar } from "@/components/enquiry/AvailabilityCalendar"
 import { toIso, useBooked } from "@/components/enquiry/useBooked";
 import { Button } from "@/components/ui/button";
 import { getArea } from "@/content/cities";
-import { fromPrice, getFarmhouse } from "@/content/farmhouses";
+import { fromPrice } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice } from "@/content/site";
 import { prettyRange } from "@/lib/booking/dates";
 import type { PublicBooking } from "@/lib/booking/types";
 
 /** When the farm isn't free: tap a nearby free date, or a similar farm on the same dates. */
 export function Alternatives({ booking, onUpdate, sameDatesLabel = "Same dates, similar farmhouses" }: { booking: PublicBooking; onUpdate: (b: PublicBooking) => void; sameDatesLabel?: string }) {
+  const { get: getFarmhouse } = useFarms();
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState("");
   const [range, setRange] = useState<DateRange | undefined>();

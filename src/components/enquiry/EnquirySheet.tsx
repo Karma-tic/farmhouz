@@ -8,7 +8,8 @@ import { Dialog } from "radix-ui";
 import { useEffect } from "react";
 import { setScrollLocked } from "@/components/providers/SmoothScroll";
 import { Button } from "@/components/ui/button";
-import { getFarmhouse, packagesFor } from "@/content/farmhouses";
+import { packagesFor } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { site } from "@/content/site";
 import type { Package } from "@/content/types";
 import { useEnquiry } from "./EnquiryContext";
@@ -28,6 +29,7 @@ const EnquiryForm = dynamic(() => import("./EnquiryForm").then((m) => m.EnquiryF
  * (the card photo morphs into the header), occasions and sticky bars.
  */
 export function EnquirySheet() {
+  const { get: getFarmhouse } = useFarms();
   const { open, setOpen, prefill } = useEnquiry();
   const farm = prefill.farmSlug ? getFarmhouse(prefill.farmSlug) : undefined;
   const pkg = (farm ? packagesFor(farm) : (site.packages as Package[])).find((p) => p.id === prefill.packageId);

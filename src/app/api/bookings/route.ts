@@ -1,10 +1,10 @@
 import { after } from "next/server";
-import { getFarmhouse } from "@/content/farmhouses";
 import { site } from "@/content/site";
 import { bad, handle, originOf, readJson } from "@/lib/api";
 import { occupiedDays, todayIST } from "@/lib/booking/dates";
 import { blockedDays, createBooking } from "@/lib/booking/repo";
 import { requestSchema } from "@/lib/booking/schema";
+import { getFarm } from "@/lib/farms/server";
 import { notifyAdmin, notifyGuest } from "@/lib/notify";
 
 /** Guest sends a booking request → status "checking". */
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     const data = parsed.data;
     if (data.company) return Response.json({ ok: true, code: null }); // honeypot
     if (!site.launched) return bad("Bookings open soon — join the early-access list on the homepage, or WhatsApp us.", 403);
-    const farm = getFarmhouse(data.farmSlug);
+    const farm = await getFarm(data.farmSlug);
     if (!farm) return bad("That farmhouse isn't available for booking.", 404);
     if (data.from < todayIST()) return bad("Please pick a date from today onwards.", 422, { errors: { from: ["Pick a future date"] } });
     if (data.guests > Math.max(farm.capacity.eventGuests, farm.capacity.sleeps))

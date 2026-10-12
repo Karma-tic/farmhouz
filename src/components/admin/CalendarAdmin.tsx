@@ -7,7 +7,7 @@ import "react-day-picker/style.css";
 import { fromIso, loadBooked, toIso } from "@/components/enquiry/useBooked";
 import { fieldBase } from "@/components/enquiry/EnquiryForm";
 import { Button } from "@/components/ui/button";
-import { farmhousesIn } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { cn } from "@/lib/utils";
 import { AdminShell } from "./AdminShell";
 import { adminFetch, useAdminData } from "./useAdmin";
@@ -16,9 +16,10 @@ type Block = { day: string; reason: string; bookingId: string | null };
 
 /** Block / unblock dates per farmhouse. Booked dates (from confirmed bookings) are locked. */
 export function CalendarAdmin() {
+  const { inCity: farmhousesIn } = useFarms();
   const id = useId();
   const farms = farmhousesIn("bhopal");
-  const [farm, setFarm] = useState(farms[0].slug);
+  const [farm, setFarm] = useState(farms[0]?.slug ?? "");
   const { data, setData, needsLogin, reload, error } = useAdminData<{ blocks: Block[] }>(`/api/admin/blocks?farm=${farm}`, 0);
   const [pending, setPending] = useState<{ add: Set<string>; remove: Set<string> }>({ add: new Set(), remove: new Set() });
   const [busy, setBusy] = useState(false);

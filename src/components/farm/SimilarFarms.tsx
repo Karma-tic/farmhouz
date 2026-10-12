@@ -1,10 +1,10 @@
 import { FarmCard } from "@/components/farm/FarmCard";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
-import { farmhousesIn } from "@/content/farmhouses";
 import type { Farmhouse } from "@/content/types";
+import { farmsIn } from "@/lib/farms/server";
 
-export function SimilarFarms({ farm }: { farm: Farmhouse }) {
-  const others = farmhousesIn(farm.city)
+export async function SimilarFarms({ farm }: { farm: Farmhouse }) {
+  const others = (await farmsIn(farm.city))
     .filter((f) => f.slug !== farm.slug)
     .map((f) => ({ f, score: (f.area === farm.area ? 3 : 0) + f.occasions.filter((o) => farm.occasions.includes(o)).length - Math.abs(f.capacity.eventGuests - farm.capacity.eventGuests) / 100 }))
     .sort((a, b) => b.score - a.score)

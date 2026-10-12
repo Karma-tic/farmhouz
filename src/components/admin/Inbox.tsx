@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useAgo, useNow } from "@/components/booking/useCountdown";
 import { Button } from "@/components/ui/button";
-import { getFarmhouse } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { formatPrice } from "@/content/site";
 import { prettyRange, todayIST } from "@/lib/booking/dates";
 import { displayCode } from "@/lib/booking/messages";
@@ -24,6 +24,7 @@ const TABS: { id: string; label: string; match: (b: Booking) => boolean }[] = [
 ];
 
 function Row({ b }: { b: Booking }) {
+  const { get: getFarmhouse } = useFarms();
   const ago = useAgo(b.createdAt);
   const farm = getFarmhouse(b.farmSlug);
   const now = useNow();

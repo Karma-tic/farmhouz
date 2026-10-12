@@ -4,8 +4,8 @@ import { Suspense } from "react";
 import { Footer } from "@/components/sections/Footer";
 import { Explorer } from "@/components/search/Explorer";
 import { getCity, liveCities } from "@/content/cities";
-import { farmhousesIn } from "@/content/farmhouses";
 import { site } from "@/content/site";
+import { farmsIn } from "@/lib/farms/server";
 
 export function generateStaticParams() {
   return liveCities.map((c) => ({ city: c.slug }));
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps<"/[city]">): Promis
   if (!c) return {};
   return {
     title: `Farmhouses in ${c.name} for parties, stays & weddings`,
-    description: `${farmhousesIn(c.slug).length} handpicked farmhouses around ${c.name} — ${c.areas.map((a) => a.name).join(", ")}. Free requests; we confirm availability within ${site.booking.checkWithin}.`,
+    description: `${(await farmsIn(c.slug)).length} handpicked farmhouses around ${c.name} — ${c.areas.map((a) => a.name).join(", ")}. Free requests; we confirm availability within ${site.booking.checkWithin}.`,
     alternates: { canonical: `/${c.slug}` },
   };
 }

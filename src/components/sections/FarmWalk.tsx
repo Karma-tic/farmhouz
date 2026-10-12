@@ -2,14 +2,16 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getArea } from "@/content/cities";
-import { farmhousesIn, fromPrice } from "@/content/farmhouses";
+import { fromPrice } from "@/content/farmhouses";
 import { formatPrice, site } from "@/content/site";
+import { farmsIn } from "@/lib/farms/server";
 import { Spaces, type WalkItem } from "./Spaces";
 
 /** Homepage: the pinned walk-through, one handpicked farmhouse per step. */
-export function FarmWalk() {
-  if (!site.launched) return <OwnersWalk />;
-  const items: WalkItem[] = farmhousesIn("bhopal").map((f) => {
+export async function FarmWalk() {
+  const farms = await farmsIn("bhopal");
+  if (!site.launched || !farms.length) return <OwnersWalk />;
+  const items: WalkItem[] = farms.map((f) => {
     const p = fromPrice(f);
     return {
       id: f.slug,

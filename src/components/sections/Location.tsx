@@ -7,7 +7,7 @@ import { useRef } from "react";
 import { project } from "@/components/farm/AreaMap";
 import { Reveal, SectionHeading } from "@/components/ui/reveal";
 import { getArea, getCity } from "@/content/cities";
-import { farmhousesIn } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { site } from "@/content/site";
 import type { Area, Farmhouse } from "@/content/types";
 
@@ -48,6 +48,7 @@ function Route({ d, area, draw, pin, reduce, delay, label }: { d: string; area: 
  * each area (homepage) or to this farmhouse's area (farmhouse page).
  */
 export function Location({ farm }: { farm?: Farmhouse }) {
+  const { inCity: farmhousesIn } = useFarms();
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "center 45%"] });

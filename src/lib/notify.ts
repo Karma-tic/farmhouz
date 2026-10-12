@@ -1,6 +1,6 @@
 import "server-only";
 import { Resend } from "resend";
-import { getFarmhouse } from "@/content/farmhouses";
+import { getFarm } from "@/lib/farms/server";
 import { formatPrice, site } from "@/content/site";
 import { prettyRange } from "@/lib/booking/dates";
 import { displayCode, statusLabel } from "@/lib/booking/messages";
@@ -19,7 +19,8 @@ async function send(to: string | null | undefined, subject: string, text: string
   }
   try {
     const { error } = await new Resend(key).emails.send({
-      from: process.env.EMAIL_FROM ?? `${site.name} <onboarding@resend.dev>`,
+      from: process.env.EMAIL_FROM ?? `${site.name} <alerts@farmhouze.in>`,
+      replyTo: site.contact.email,
       to,
       subject,
       text,
@@ -32,8 +33,8 @@ async function send(to: string | null | undefined, subject: string, text: string
 
 const adminEmail = () => process.env.ADMIN_EMAIL ?? site.contact.email;
 
-function summary(b: Booking) {
-  const farm = getFarmhouse(b.farmSlug);
+async function summary(b: Booking) {
+  const farm = await getFarm(b.farmSlug);
   return [
     `${farm?.name ?? b.farmSlug} · ${prettyRange(b.checkIn, b.checkOut, { weekday: true })}`,
     `${b.guests} guests${b.occasion ? ` · ${b.occasion}` : ""}`,
@@ -46,8 +47,8 @@ function summary(b: Booking) {
 
 export async function notifyAdmin(b: Booking, what: "new" | "payment" | "switch", origin: string) {
   const subject =
-    what === "new" ? `New request ${displayCode(b.code)} · ${getFarmhouse(b.farmSlug)?.name}` : what === "payment" ? `Payment submitted ${displayCode(b.code)} · UTR ${b.paymentUtr}` : `Guest switched ${displayCode(b.code)}`;
-  await send(adminEmail(), subject, `${summary(b)}\n\nOpen in admin: ${origin}/admin/bookings/${b.id}`);
+    what === "new" ? `New request ${displayCode(b.code)} · ${(await getFarm(b.farmSlug))?.name}` : what === "payment" ? `Payment submitted ${displayCode(b.code)} · UTR ${b.paymentUtr}` : `Guest switched ${displayCode(b.code)}`;
+  await send(adminEmail(), subject, `${await summary(b)}\n\nOpen in admin: ${origin}/admin/bookings/${b.id}`);
 }
 
 export async function notifyGuest(b: Booking, origin: string) {
@@ -62,7 +63,7 @@ export async function notifyGuest(b: Booking, origin: string) {
     expired: "The hold on your dates has lapsed. Tap 'Check again' on your booking page if you'd still like them.",
     cancelled: `Your booking has been cancelled. ${b.guestNote ?? ""}`,
   };
-  await send(b.email, `${statusLabel[b.status]} · ${getFarmhouse(b.farmSlug)?.name} · ${displayCode(b.code)}`, `Hi ${b.name.split(/\s+/)[0]},\n\n${lines[b.status]}\n\n${summary(b)}\n\nYour booking page: ${link}\n\n— ${site.name}`);
+  await send(b.email, `${statusLabel[b.status]} · ${(await getFarm(b.farmSlug))?.name} · ${displayCode(b.code)}`, `Hi ${b.name.split(/\s+/)[0]},\n\n${lines[b.status]}\n\n${await summary(b)}\n\nYour booking page: ${link}\n\n— ${site.name}`);
 }
 
 /** Short heads-up to the admin inbox (owner applications, waitlist sign-ups). */

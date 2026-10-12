@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { handleHashLink } from "@/components/chrome/scrollLink";
 import { Button } from "@/components/ui/button";
-import { published } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { defaultWhatsappText, site, whatsappLink } from "@/content/site";
 import { mq } from "@/lib/motion/gsap";
 import { usePinTimeline } from "@/lib/motion/usePinTimeline";
@@ -29,6 +29,7 @@ function pickFramePath(canvas: HTMLCanvasElement) {
  * silent loop; reduced motion gets the landed (final) frame.
  */
 export function Hero() {
+  const { farms: published } = useFarms();
   const root = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const textRef = useRef<HTMLDivElement>(null);

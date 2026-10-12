@@ -1,5 +1,5 @@
 import { after, connection } from "next/server";
-import { getFarmhouse } from "@/content/farmhouses";
+import { getFarm } from "@/lib/farms/server";
 import { bad, handle, originOf, readJson } from "@/lib/api";
 import { occupiedDays, todayIST } from "@/lib/booking/dates";
 import { blockedDays, getBookingByCode, publicView, updateBooking } from "@/lib/booking/repo";
@@ -38,7 +38,7 @@ export async function POST(req: Request, { params }: Ctx) {
     if (a.action === "switch") {
       if (!["unavailable", "expired", "checking"].includes(b.status)) return bad("You can change dates only before paying. Message us on WhatsApp.", 409);
       const farmSlug = a.farmSlug ?? b.farmSlug;
-      const farm = getFarmhouse(farmSlug);
+      const farm = await getFarm(farmSlug);
       if (!farm) return bad("That farmhouse isn't available.", 404);
       if (a.from < todayIST()) return bad("Please pick a date from today onwards.", 422);
       const booked = new Set(await blockedDays(farmSlug));

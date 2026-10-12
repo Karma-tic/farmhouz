@@ -9,7 +9,8 @@ import { AreaMap } from "@/components/farm/AreaMap";
 import { FarmCard } from "@/components/farm/FarmCard";
 import { Button } from "@/components/ui/button";
 import { getCity } from "@/content/cities";
-import { farmhousesIn, fromPrice } from "@/content/farmhouses";
+import { fromPrice } from "@/content/farmhouses";
+import { useFarms } from "@/lib/farms/client";
 import { site } from "@/content/site";
 import type { AmenityId, OccasionId } from "@/content/types";
 import { occupiedDays } from "@/lib/booking/dates";
@@ -26,6 +27,7 @@ const SORTS = [
 
 /** City page: live filters (URL-synced), results grid and a sticky area map. */
 export function Explorer({ city }: { city: string }) {
+  const { inCity: farmhousesIn } = useFarms();
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
