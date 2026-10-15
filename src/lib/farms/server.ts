@@ -90,3 +90,11 @@ export async function deleteFarm(slug: string) {
   await sql`delete from farms where slug = ${slug}`;
   revalidateTag(FARMS_TAG, "max");
 }
+
+/** Any farmhouse, drafts included — only for the admin preview. Not cached. */
+export async function getFarmForPreview(slug: string): Promise<Farmhouse | undefined> {
+  if (!dbConfigured()) return undefined;
+  const sql = await db();
+  const [r] = await sql`select slug, data, published from farms where slug = ${slug}`;
+  return r ? toFarm(r) : undefined;
+}

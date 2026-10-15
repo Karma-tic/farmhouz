@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, Pencil, Plus } from "lucide-react";
+import { ExternalLink, Eye, Pencil, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,11 @@ export function FarmsAdmin() {
                     <Link href={`/admin/farms/edit?slug=${f.slug}`}>
                       <Pencil /> Edit
                     </Link>
+                  </Button>
+                  <Button asChild size="sm" variant="outline" className="text-ink">
+                    <a href={`/preview/${f.slug}`} target="_blank" rel="noopener noreferrer">
+                      <Eye /> Preview
+                    </a>
                   </Button>
                   {f.published && site.launched && (
                     <Button asChild size="sm" variant="ghost" className="text-ink">

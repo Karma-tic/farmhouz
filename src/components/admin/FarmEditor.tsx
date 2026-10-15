@@ -176,6 +176,13 @@ function FarmForm({ initial, initialOwner, existingSlug }: { initial: Farmhouse;
           <p className="eyebrow mb-1 text-sage">{existingSlug ? (initial.published ? "Published" : "Draft") : "New farmhouse"}</p>
           <h1 className="display display-md">{f.name || "Untitled farmhouse"}</h1>
         </div>
+        {existingSlug && (
+          <Button asChild variant="outline" className="text-ink">
+            <a href={`/preview/${existingSlug}`} target="_blank" rel="noopener noreferrer">
+              Preview page
+            </a>
+          </Button>
+        )}
       </header>
 
       <Section title="Basics" hint="What guests see first.">
