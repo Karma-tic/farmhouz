@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { AdminShell } from "./AdminShell";
 import { adminFetch, useAdminData } from "./useAdmin";
 
-type Lead = { id: string; createdAt: string; name: string; phone: string; farmName: string; area: string | null; guests: number | null; hasPool: boolean | null; photosLink: string | null; notes: string | null; status: string };
+type Lead = { id: string; createdAt: string; name: string; phone: string; farmName: string; area: string | null; guests: number | null; hasPool: boolean | null; photosLink: string | null; notes: string | null; source: string | null; ref: string | null; status: string };
 const STATUSES = ["new", "contacted", "visited", "listed", "declined"];
 
 export function LeadsAdmin() {
@@ -50,6 +50,7 @@ export function LeadsAdmin() {
                 {l.name} · <span className="font-mono">{l.phone}</span>
               </p>
               {l.notes && <p className="mb-3 text-sm text-muted">{l.notes}</p>}
+              {(l.source || l.ref) && <p className="eyebrow mb-3 text-sage">Heard via {[l.source, l.ref && `link: ${l.ref}`].filter(Boolean).join(" · ")}</p>}
               <div className="flex flex-wrap gap-2">
                 <Button asChild size="sm" variant="sage">
                   <a href={`https://wa.me/${waNumber(l.phone)}?text=${encodeURIComponent(`Hi ${l.name}, this is Farmhouze — thanks for applying to list ${l.farmName}! When could we visit?`)}`} target="_blank" rel="noopener noreferrer">

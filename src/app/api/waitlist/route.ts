@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     after(() =>
       notifyAdminNote(
         `Waitlist: ${w.name}${w.occasion ? ` · ${w.occasion}` : ""}`,
-        [`${w.name} · ${w.phone}`, w.occasion && `Occasion: ${w.occasion}`, w.when && `When: ${w.when}`, w.guests && `Guests: ${w.guests}`, w.notes && `Note: ${w.notes}`, `\n${origin}/admin/waitlist`].filter(Boolean).join("\n"),
+        [`${w.name} · ${w.phone}`, w.occasion && `Occasion: ${w.occasion}`, w.when && `When: ${w.when}`, w.guests && `Guests: ${w.guests}`, w.notes && `Note: ${w.notes}`, (w.source || w.ref) && `Heard via: ${[w.source, w.ref && `link ${w.ref}`].filter(Boolean).join(" · ")}`, `\n${origin}/admin/waitlist`].filter(Boolean).join("\n"),
       ),
     );
     return Response.json({ ok: true });

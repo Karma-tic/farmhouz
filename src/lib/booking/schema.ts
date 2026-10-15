@@ -82,6 +82,8 @@ export const leadSchema = z.object({
   hasPool: z.boolean().optional(),
   photosLink: z.string().trim().url("Paste a link (Google Drive, Instagram…)").max(400).optional().or(z.literal("")),
   notes: optionalText(1000),
+  source: optionalText(40),
+  ref: optionalText(60),
   company: z.string().max(0).optional().or(z.literal("")),
 });
 export type LeadInput = z.input<typeof leadSchema>;
@@ -93,6 +95,11 @@ export const waitlistSchema = z.object({
   when: optionalText(80),
   guests: z.number().int().min(1).max(2000).optional(),
   notes: optionalText(600),
+  source: optionalText(40),
+  ref: optionalText(60),
   company: z.string().max(0).optional().or(z.literal("")),
 });
 export type WaitlistInput = z.input<typeof waitlistSchema>;
+
+/** "How did you hear about us?" options shown on both forms */
+export const SOURCES = ["Instagram", "WhatsApp", "Google search", "Facebook", "Friend or family", "Poster or flyer", "Someone from Farmhouze called me", "Other"] as const;

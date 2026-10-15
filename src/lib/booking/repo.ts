@@ -240,8 +240,8 @@ export async function publicView(b: Booking): Promise<PublicBooking> {
 /* ------------------------------------------------------------- owner leads */
 export async function createLead(l: LeadInput) {
   const sql = await db();
-  await sql`insert into owner_leads (name, phone, farm_name, area, guests, has_pool, photos_link, notes)
-            values (${l.name}, ${l.phone}, ${l.farmName}, ${l.area || null}, ${l.guests ?? null}, ${l.hasPool ?? null}, ${l.photosLink || null}, ${l.notes || null})`;
+  await sql`insert into owner_leads (name, phone, farm_name, area, guests, has_pool, photos_link, notes, source, ref)
+            values (${l.name}, ${l.phone}, ${l.farmName}, ${l.area || null}, ${l.guests ?? null}, ${l.hasPool ?? null}, ${l.photosLink || null}, ${l.notes || null}, ${l.source || null}, ${l.ref || null})`;
 }
 
 export async function listLeads() {
@@ -258,6 +258,8 @@ export async function listLeads() {
     hasPool: (r.has_pool as boolean) ?? null,
     photosLink: (r.photos_link as string) ?? null,
     notes: (r.notes as string) ?? null,
+    source: (r.source as string) ?? null,
+    ref: (r.ref as string) ?? null,
     status: String(r.status),
   }));
 }
@@ -270,8 +272,8 @@ export async function setLeadStatus(id: string, status: string) {
 /* --------------------------------------------------------- guest waitlist */
 export async function createWaitlist(w: WaitlistInput) {
   const sql = await db();
-  await sql`insert into waitlist (name, phone, occasion, when_text, guests, notes)
-            values (${w.name}, ${w.phone}, ${w.occasion || null}, ${w.when || null}, ${w.guests ?? null}, ${w.notes || null})`;
+  await sql`insert into waitlist (name, phone, occasion, when_text, guests, notes, source, ref)
+            values (${w.name}, ${w.phone}, ${w.occasion || null}, ${w.when || null}, ${w.guests ?? null}, ${w.notes || null}, ${w.source || null}, ${w.ref || null})`;
 }
 
 export async function listWaitlist() {
@@ -286,6 +288,8 @@ export async function listWaitlist() {
     when: (r.when_text as string) ?? null,
     guests: r.guests == null ? null : Number(r.guests),
     notes: (r.notes as string) ?? null,
+    source: (r.source as string) ?? null,
+    ref: (r.ref as string) ?? null,
     status: String(r.status),
   }));
 }

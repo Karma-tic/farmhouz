@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     after(() =>
       notifyAdminNote(
         `New owner: ${l.farmName}${l.area ? ` · ${l.area}` : ""}`,
-        [`${l.name} · ${l.phone}`, l.guests && `Guests: ${l.guests}`, l.hasPool && "Has a pool", l.photosLink && `Photos: ${l.photosLink}`, l.notes && `Note: ${l.notes}`, `\n${origin}/admin/leads`].filter(Boolean).join("\n"),
+        [`${l.name} · ${l.phone}`, l.guests && `Guests: ${l.guests}`, l.hasPool && "Has a pool", l.photosLink && `Photos: ${l.photosLink}`, l.notes && `Note: ${l.notes}`, (l.source || l.ref) && `Heard via: ${[l.source, l.ref && `link ${l.ref}`].filter(Boolean).join(" · ")}`, `\n${origin}/admin/leads`].filter(Boolean).join("\n"),
       ),
     );
     return Response.json({ ok: true });

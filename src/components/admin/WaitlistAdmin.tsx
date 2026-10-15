@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { AdminShell } from "./AdminShell";
 import { adminFetch, useAdminData } from "./useAdmin";
 
-type Person = { id: string; createdAt: string; name: string; phone: string; occasion: string | null; when: string | null; guests: number | null; notes: string | null; status: string };
+type Person = { id: string; createdAt: string; name: string; phone: string; occasion: string | null; when: string | null; guests: number | null; notes: string | null; source: string | null; ref: string | null; status: string };
 const STATUSES = ["new", "contacted", "booked", "not-interested"];
 
 /** Pre-launch guest waitlist: people to WhatsApp the day bookings open. */
@@ -52,6 +52,7 @@ export function WaitlistAdmin() {
               </div>
               <p className="mb-3 font-mono">{p.phone}</p>
               {p.notes && <p className="mb-3 text-sm text-muted">{p.notes}</p>}
+              {(p.source || p.ref) && <p className="eyebrow mb-3 text-sage">Heard via {[p.source, p.ref && `link: ${p.ref}`].filter(Boolean).join(" · ")}</p>}
               <Button asChild size="sm" variant="sage">
                 <a href={`https://wa.me/${waNumber(p.phone)}?text=${encodeURIComponent(`Hi ${p.name}, this is Farmhouze! You asked to hear first when farmhouse bookings open in Bhopal — `)}`} target="_blank" rel="noopener noreferrer">
                   <MessageCircle /> WhatsApp

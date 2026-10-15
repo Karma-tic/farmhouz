@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Field, fieldBase } from "@/components/enquiry/EnquiryForm";
 import { Button } from "@/components/ui/button";
 import { getCity } from "@/content/cities";
-import { leadSchema, type LeadInput } from "@/lib/booking/schema";
+import { leadSchema, SOURCES, type LeadInput } from "@/lib/booking/schema";
 import { cn } from "@/lib/utils";
 
 export function LeadForm() {
@@ -19,7 +19,7 @@ export function LeadForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LeadInput>({ resolver: zodResolver(leadSchema), mode: "onTouched", defaultValues: { name: "", phone: "", farmName: "", area: "", photosLink: "", notes: "", company: "" } });
+  } = useForm<LeadInput>({ resolver: zodResolver(leadSchema), mode: "onTouched", defaultValues: { name: "", phone: "", farmName: "", area: "", photosLink: "", notes: "", source: "", company: "" } });
 
   if (done)
     return (
@@ -38,7 +38,7 @@ export function LeadForm() {
       className="grid grid-cols-2 gap-x-4 gap-y-5"
       onSubmit={handleSubmit(async (data) => {
         setErr("");
-        const res = await fetch("/api/owner-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const res = await fetch("/api/owner-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, ref: new URLSearchParams(window.location.search).get("ref")?.slice(0, 60) ?? "" }) });
         const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (res.ok && json.ok) setDone(true);
         else setErr(json.error ?? "Something went wrong. Please try again.");
@@ -71,6 +71,14 @@ export function LeadForm() {
       </div>
       <Field label="Photos link (optional)" id={id("ph")} error={errors.photosLink?.message} hint="Google Drive, Instagram or a website" className="col-span-2">
         <input id={id("ph")} type="url" className={fieldBase} placeholder="https://" {...register("photosLink")} />
+      </Field>
+      <Field label="How did you hear about us?" id={id("src")} className="col-span-2">
+        <select id={id("src")} className={fieldBase} {...register("source")}>
+          <option value="">Choose one (optional)</option>
+          {SOURCES.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
       </Field>
       <Field label="Anything else? (optional)" id={id("no")} className="col-span-2">
         <textarea id={id("no")} rows={3} className={cn(fieldBase, "py-3")} {...register("notes")} />

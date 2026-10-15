@@ -6,7 +6,7 @@ import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { site, whatsappLink } from "@/content/site";
-import { waitlistSchema, type WaitlistInput } from "@/lib/booking/schema";
+import { SOURCES, waitlistSchema, type WaitlistInput } from "@/lib/booking/schema";
 import { cn } from "@/lib/utils";
 import { Field, fieldBase } from "./EnquiryForm";
 
@@ -26,7 +26,7 @@ export function WaitlistForm({ defaultOccasion, compact }: { defaultOccasion?: s
   } = useForm<WaitlistInput>({
     resolver: zodResolver(waitlistSchema),
     mode: "onTouched",
-    defaultValues: { name: "", phone: "", occasion: defaultOccasion ?? "", when: "", notes: "", company: "" },
+    defaultValues: { name: "", phone: "", occasion: defaultOccasion ?? "", when: "", notes: "", source: "", company: "" },
   });
 
   if (done)
@@ -53,7 +53,7 @@ export function WaitlistForm({ defaultOccasion, compact }: { defaultOccasion?: s
       className="grid grid-cols-2 gap-x-4 gap-y-5"
       onSubmit={handleSubmit(async (data) => {
         setErr("");
-        const res = await fetch("/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        const res = await fetch("/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, ref: new URLSearchParams(window.location.search).get("ref")?.slice(0, 60) ?? "" }) });
         const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (res.ok && json.ok) setDone(data.name.split(" ")[0]);
         else setErr(json.error ?? "Something went wrong. Please try again, or WhatsApp us.");
@@ -83,6 +83,14 @@ export function WaitlistForm({ defaultOccasion, compact }: { defaultOccasion?: s
       )}
       <Field label="Anything else? (optional)" id={id("x")} className={cn("col-span-2", !compact && "sm:col-span-1")}>
         <input id={id("x")} className={fieldBase} placeholder="Pool, area, budget…" {...register("notes")} />
+      </Field>
+      <Field label="How did you hear about us?" id={id("src")} className="col-span-2">
+        <select id={id("src")} className={fieldBase} {...register("source")}>
+          <option value="">Choose one (optional)</option>
+          {SOURCES.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
       </Field>
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
         <input tabIndex={-1} autoComplete="off" {...register("company")} />

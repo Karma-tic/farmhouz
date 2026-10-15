@@ -118,6 +118,11 @@ create table if not exists waitlist (
   notes       text,
   status      text not null default 'new'
 );
+
+alter table owner_leads add column if not exists source text;
+alter table owner_leads add column if not exists ref text;
+alter table waitlist add column if not exists source text;
+alter table waitlist add column if not exists ref text;
 `;
 
 /** Returns the SQL client, creating tables on the first call of each server instance. */
