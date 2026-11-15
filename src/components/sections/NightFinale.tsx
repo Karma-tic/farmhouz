@@ -58,7 +58,7 @@ export function NightFinale() {
       {/* the fire itself: a real photograph, fading up into the night sky */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-[72%] [mask-image:linear-gradient(to_top,black_35%,transparent)]"
+        className="absolute inset-x-0 bottom-0 h-[62%] [mask-image:linear-gradient(to_top,black_30%,transparent)]"
       >
         <Image
           src={photos.fire.src}
@@ -66,9 +66,10 @@ export function NightFinale() {
           fill
           sizes="100vw"
           quality={70}
-          className="object-cover object-[50%_70%] opacity-70 saturate-[1.1]"
+          className="object-cover object-[50%_85%] opacity-45"
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_100%,transparent_20%,var(--night)_78%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_110%,transparent_15%,var(--night)_70%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-night/70 via-transparent to-night/40" />
       </div>
 
       {/* stars */}
