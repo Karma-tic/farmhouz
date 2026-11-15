@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Wordmark } from "@/components/chrome/Logo";
 import { TrackBooking } from "@/components/booking/TrackBooking";
 import { cities } from "@/content/cities";
+import { photoCredits } from "@/content/photos";
 import { site, whatsappLink, defaultWhatsappText } from "@/content/site";
 import { AmbientSound } from "./AmbientSound";
 
@@ -104,9 +105,19 @@ export function Footer() {
               className="display select-none text-[clamp(4rem,17vw,16rem)] leading-[0.8] text-moon/[0.07] after:content-[attr(data-word)]"
             />
             <div className="mt-6 flex flex-col justify-between gap-4 border-t border-line bg-night pt-6 text-sm text-night-muted sm:flex-row sm:items-center">
-              <p>
-                © {year} {site.name} · Booking agent for farmhouse stays · Made with <span aria-label="love">♥</span> for slow weekends
-              </p>
+              <div className="flex flex-col gap-1">
+                <p>
+                  © {year} {site.name} · Booking agent for farmhouse stays · Made with <span aria-label="love">♥</span> for slow weekends
+                </p>
+                {photoCredits.length > 0 && (
+                  <p className="text-xs text-night-muted/80">
+                    Photos are representative, not our listed farmhouses ·{" "}
+                    <Link href="/photo-credits" className="link-draw">
+                      Photo credits
+                    </Link>
+                  </p>
+                )}
+              </div>
               <AmbientSound />
             </div>
           </div>

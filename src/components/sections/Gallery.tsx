@@ -74,7 +74,7 @@ export function Gallery() {
               Golden hour, <span className="italic-soft text-terra">every</span> hour.
             </>
           }
-          intro="Real days at the farm: birthdays by the pool, haldis on the lawn, quiet mornings with chai."
+          intro="Days at a farm: birthdays by the pool, haldis on the lawn, quiet mornings with chai."
         />
       </div>
 
