@@ -7,6 +7,8 @@ export type Media = {
   alt: string;
   /** true while the file is still a generated placeholder */
   placeholder?: boolean;
+  /** photographer, when this is a stock stand-in photo (credited in the footer) */
+  credit?: string;
 };
 
 export type OccasionId =

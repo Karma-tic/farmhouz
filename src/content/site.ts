@@ -3,6 +3,7 @@
  * Farmhouses live in farmhouses.ts, cities & areas in cities.ts.
  * Anything marked `OWNER TO FILL` is a placeholder to replace before launch.
  */
+import { photos } from "./photos";
 import type { Faq, GalleryCategory, GalleryPhoto, Media, OccasionId, Package, PackageId, Review } from "./types";
 
 export type { Faq, GalleryCategory, GalleryPhoto, Media, Phase, Review } from "./types";
@@ -44,10 +45,10 @@ export const site = {
       { value: 0, suffix: "", label: "booking fees for you" },
     ],
     owners: [
-      { id: "apply", name: "Tell us about it", description: "Fill a two-minute form or WhatsApp us a few photos and the location. Listing is free.", chips: ["2 minutes", "Free to list"], image: { src: `${P}/spaces/lawn.webp`, alt: "Wide green lawn in front of a farmhouse" } },
-      { id: "visit", name: "We visit and set it up", description: "We see it in person, agree prices and rules with you, and build its page — with a name and identity if it doesn't have one yet.", chips: ["We visit", "Its own page"], image: { src: `${P}/spaces/orchard.webp`, alt: "Mango orchard rows at golden hour" } },
-      { id: "enquiries", name: "We handle every enquiry", description: "Calls, WhatsApps, questions, payments — we deal with guests. You only get a message when dates are booked.", chips: ["No calls for you", "Advance collected"], image: { src: `${P}/spaces/pool.webp`, alt: "Private pool by the farmhouse" } },
-      { id: "host", name: "You host and get paid", description: "Guests arrive with a booking pass and the balance. Need dates for yourself? Tell us and we block them.", chips: ["Your calendar", "Your rules"], image: { src: `${P}/spaces/bonfire.webp`, alt: "Bonfire on the lawn at night" } },
+      { id: "apply", name: "Tell us about it", description: "Fill a two-minute form or WhatsApp us a few photos and the location. Listing is free.", chips: ["2 minutes", "Free to list"], image: photos.lawn },
+      { id: "visit", name: "We visit and set it up", description: "We see it in person, agree prices and rules with you, and build its page — with a name and identity if it doesn't have one yet.", chips: ["We visit", "Its own page"], image: photos.orchard },
+      { id: "enquiries", name: "We handle every enquiry", description: "Calls, WhatsApps, questions, payments — we deal with guests. You only get a message when dates are booked.", chips: ["No calls for you", "Advance collected"], image: photos.pool },
+      { id: "host", name: "You host and get paid", description: "Guests arrive with a booking pass and the balance. Need dates for yourself? Tell us and we block them.", chips: ["Your calendar", "Your rules"], image: photos.bonfire },
     ],
   },
 
@@ -106,7 +107,7 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "day",
       pricing: "flat",
-      image: { src: `${P}/packages/day-out.webp`, alt: "Friends relaxing by the pool on a sunny afternoon", placeholder: true },
+      image: photos.poolAerial,
     },
     {
       id: "night-stay",
@@ -117,7 +118,7 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "night",
       pricing: "per-night",
-      image: { src: `${P}/packages/night-stay.webp`, alt: "The farmhouse lit up at night under the stars", placeholder: true },
+      image: photos.stars,
     },
     {
       id: "weekend-escape",
@@ -128,7 +129,7 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "night",
       pricing: "per-night",
-      image: { src: `${P}/packages/weekend-escape.webp`, alt: "Chai on the porch with fields stretching to the horizon", placeholder: true },
+      image: photos.farmhousePalms,
     },
     {
       id: "celebrations",
@@ -139,7 +140,7 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "event",
       pricing: "flat",
-      image: { src: `${P}/packages/celebrations.webp`, alt: "Marigold decor and fairy lights set up on the lawn", placeholder: true },
+      image: photos.stringLights,
     },
     {
       id: "shoots",
@@ -150,7 +151,7 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "shoot",
       pricing: "flat",
-      image: { src: `${P}/packages/shoots.webp`, alt: "Couple walking through the orchard at golden hour", placeholder: true },
+      image: photos.couple,
     },
     {
       id: "corporate",
@@ -161,16 +162,16 @@ export const site = {
       priceFrom: null, // shown as "from ₹—"; or set your lowest price across farmhouses
       priceUnit: "day",
       pricing: "flat",
-      image: { src: `${P}/packages/corporate.webp`, alt: "Team sitting in a circle on the lawn for an outdoor session", placeholder: true },
+      image: photos.team,
     },
   ] satisfies Package[],
 
   occasions: [
-    { id: "birthday", name: "Birthday", description: "Pool by day, cake and a bonfire by night. Bring the playlist; the farm handles the lights.", packageId: "celebrations", image: { src: `${P}/celebrations/birthday.webp`, alt: "Birthday table on the lawn with balloons and fairy lights", placeholder: true } },
-    { id: "haldi-mehendi", name: "Haldi & Mehendi", description: "Yellow, marigold and open sky. Space for the dhol, the decorators and the whole family.", packageId: "celebrations", image: { src: `${P}/celebrations/haldi.webp`, alt: "Haldi ceremony with marigold decor under a canopy", placeholder: true } },
-    { id: "wedding", name: "Small Wedding", description: "Intimate weddings for up to 300 guests, with rooms for close family to stay over.", packageId: "celebrations", image: { src: `${P}/celebrations/wedding.webp`, alt: "Small wedding mandap set up on the lawn at dusk", placeholder: true } },
-    { id: "shoot", name: "Pre-wedding Shoot", description: "Orchard rows, old gates, poolside and that golden hour. Five looks without leaving the farm.", packageId: "shoots", image: { src: `${P}/celebrations/prewedding.webp`, alt: "Couple posing at a farm gate in golden light", placeholder: true } },
-    { id: "corporate", name: "Corporate Offsite", description: "Strategy on the lawn, cricket after lunch, dinner by the fire. Better than a hotel ballroom.", packageId: "corporate", image: { src: `${P}/celebrations/offsite.webp`, alt: "Team offsite session on the lawn with a whiteboard", placeholder: true } },
+    { id: "birthday", name: "Birthday", description: "Pool by day, cake and a bonfire by night. Bring the playlist; the farm handles the lights.", packageId: "celebrations", image: photos.stringLightsPath },
+    { id: "haldi-mehendi", name: "Haldi & Mehendi", description: "Yellow, marigold and open sky. Space for the dhol, the decorators and the whole family.", packageId: "celebrations", image: photos.haldi },
+    { id: "wedding", name: "Small Wedding", description: "Intimate weddings for up to 300 guests, with rooms for close family to stay over.", packageId: "celebrations", image: photos.mandap },
+    { id: "shoot", name: "Pre-wedding Shoot", description: "Orchard rows, old gates, poolside and that golden hour. Five looks without leaving the farm.", packageId: "shoots", image: photos.coupleWoods },
+    { id: "corporate", name: "Corporate Offsite", description: "Strategy on the lawn, cricket after lunch, dinner by the fire. Better than a hotel ballroom.", packageId: "corporate", image: photos.bonfireCircle },
   ] satisfies Occasion[],
 
   occasionLabels: {
@@ -206,24 +207,24 @@ export const site = {
   gallery: {
     categories: ["Stays", "Parties", "Weddings", "Shoots", "Nature"] as GalleryCategory[],
     photos: [
-      { src: `${P}/gallery/01.webp`, alt: "Morning mist over the fields", category: "Nature", ratio: 1.5, placeholder: true },
-      { src: `${P}/gallery/02.webp`, alt: "Feet dangling in the pool", category: "Stays", ratio: 0.8, placeholder: true },
-      { src: `${P}/gallery/03.webp`, alt: "Birthday dinner under string lights", category: "Parties", ratio: 1.33, placeholder: true },
-      { src: `${P}/gallery/04.webp`, alt: "Haldi ceremony with marigolds", category: "Weddings", ratio: 0.75, placeholder: true },
-      { src: `${P}/gallery/05.webp`, alt: "Couple in the orchard at golden hour", category: "Shoots", ratio: 0.8, placeholder: true },
-      { src: `${P}/gallery/06.webp`, alt: "Chai on the porch at sunrise", category: "Stays", ratio: 1.5, placeholder: true },
-      { src: `${P}/gallery/07.webp`, alt: "Bonfire with friends at night", category: "Parties", ratio: 1, placeholder: true },
-      { src: `${P}/gallery/08.webp`, alt: "Mango trees heavy with fruit", category: "Nature", ratio: 0.75, placeholder: true },
-      { src: `${P}/gallery/09.webp`, alt: "Wedding mandap on the lawn", category: "Weddings", ratio: 1.33, placeholder: true },
-      { src: `${P}/gallery/10.webp`, alt: "Bedroom with morning light", category: "Stays", ratio: 1, placeholder: true },
-      { src: `${P}/gallery/11.webp`, alt: "Brand shoot by the pool", category: "Shoots", ratio: 1.5, placeholder: true },
-      { src: `${P}/gallery/12.webp`, alt: "Sunset over the fields", category: "Nature", ratio: 1.5, placeholder: true },
-      { src: `${P}/gallery/13.webp`, alt: "Dance floor on the lawn", category: "Parties", ratio: 0.8, placeholder: true },
-      { src: `${P}/gallery/14.webp`, alt: "Mehendi hands with fairy lights", category: "Weddings", ratio: 1, placeholder: true },
-      { src: `${P}/gallery/15.webp`, alt: "Peacock in the orchard", category: "Nature", ratio: 0.8, placeholder: true },
-      { src: `${P}/gallery/16.webp`, alt: "Pre-wedding shoot at the gate", category: "Shoots", ratio: 0.75, placeholder: true },
-      { src: `${P}/gallery/17.webp`, alt: "Board games in the hall", category: "Stays", ratio: 1.33, placeholder: true },
-      { src: `${P}/gallery/18.webp`, alt: "Stars over the farmhouse", category: "Nature", ratio: 1.5, placeholder: true },
+      { ...photos.mist, category: "Nature", ratio: 1.5 },
+      { ...photos.poolFeet, category: "Stays", ratio: 0.8 },
+      { ...photos.stringLights, category: "Parties", ratio: 1.33 },
+      { ...photos.haldiColour, category: "Weddings", ratio: 0.75 },
+      { ...photos.couple, category: "Shoots", ratio: 0.8 },
+      { ...photos.chai, category: "Stays", ratio: 1.5 },
+      { ...photos.bonfire, category: "Parties", ratio: 1 },
+      { ...photos.mango, category: "Nature", ratio: 0.75 },
+      { ...photos.mandapAisle, category: "Weddings", ratio: 1.33 },
+      { ...photos.bedroom, category: "Stays", ratio: 1 },
+      { ...photos.shoot, category: "Shoots", ratio: 1.5 },
+      { ...photos.sunset, category: "Nature", ratio: 1.5 },
+      { ...photos.party, category: "Parties", ratio: 0.8 },
+      { ...photos.mehendi, category: "Weddings", ratio: 1 },
+      { ...photos.peacock, category: "Nature", ratio: 0.8 },
+      { ...photos.coupleWoods, category: "Shoots", ratio: 0.75 },
+      { ...photos.boardGames, category: "Stays", ratio: 1.33 },
+      { ...photos.stars, category: "Nature", ratio: 1.5 },
     ] satisfies GalleryPhoto[],
   },
 
@@ -268,13 +269,13 @@ export const site = {
   ],
 
   navPhotos: {
-    Farmhouses: `${P}/packages/day-out.webp`,
-    "For owners": `${P}/spaces/lawn.webp`,
-    Packages: `${P}/spaces/lawn.webp`,
-    Celebrations: `${P}/celebrations/haldi.webp`,
-    Gallery: `${P}/gallery/12.webp`,
-    Location: `${P}/gallery/01.webp`,
-    FAQ: `${P}/spaces/bonfire.webp`,
+    Farmhouses: photos.farmhouse.src,
+    "For owners": photos.lawn.src,
+    Packages: photos.lawn.src,
+    Celebrations: photos.haldi.src,
+    Gallery: photos.sunset.src,
+    Location: photos.mist.src,
+    FAQ: photos.bonfire.src,
   } as Record<string, string>,
 
   ogImage: `${P}/og.jpg`,
